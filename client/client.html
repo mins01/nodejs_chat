@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko" >
+<head>
+	<title>nodejs_chat</title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="http://www.mins01.com/favicon.ico">	
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<!-- <script src="/js/ForGoogle.js"></script> -->
+	<!-- google analytics -->
+	<!-- <script>ForGoogle.analytics()</script> -->
+	
+
+	<!-- jquery 관련 -->
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>  
+
+
+	<!-- 부트스트랩 4 : IE8지원안됨! -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous"> 
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script> 
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
+	<!-- vue.js -->
+	<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+	
+	<!-- meta og -->
+	
+	<meta property="og:title" content="nodejs_chat">
+	<meta property="og:description" content="nodejs_chat">
+	<meta name="og:image" content="http://www.mins01.com/img/logo.gif">
+	<meta property="og:image:width" content="190">
+	<meta property="og:image:height" content="70" />
+	<meta property="og:site_name" content="nodejs_chat" />
+	<meta property="og:type" content="website">
+	
+	<!-- //meta og -->
+	
+	<script src="client.js"></script>
+	<script src="MsgObj.js"></script>
+	<script>
+	var cl = new Client();
+	cl.onmessage = function(event){
+			// var res = JSON.parse(event.data);
+			console.log(this+".!onmessage("+event.data+")");
+			$("#output").prepend('<li class="list-group-item">'+event.data+'</li>')
+		}
+	$(function(){
+		
+		cl.connect();
+		setTimeout(function(){
+			var mo = new MsgObj();
+			mo.cmd = "talk";
+			mo.rid = "robby";
+			mo.val = "talking";
+			cl.send(mo);
+		},1000)
+	})
+	
+	function form_submit(f){
+		var mo = new MsgObj();
+		mo.cmd = "talk";
+		mo.rid = "robby";
+		mo.val = f.msg.value;
+		f.msg.value="";
+		cl.send(mo);
+		
+	}
+	</script>
+	<style>
+	.outbox{
+		position: fixed;left:5px;right:5px;bottom:5px;top:5px;
+		display: flex;
+    /* flex-wrap: wrap; */
+		/* flex: 1 1 0; */
+		flex-direction: column;
+	}
+	#output{
+		flex: 1 0 100px;
+		overflow-y: scroll;
+	}
+	#input{
+		flex: 0 0 0;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<form action="#" onsubmit="form_submit(this); return false;">
+			<div class="outbox">
+				<div id="output">
+					<ul class="list-group">
+						<li class="list-group-item"></li>
+					</ul>
+				</div>
+				<div id="input">
+					<input name="msg" type="text" class="form-control" />
+				</div>	
+			</div>	
+		</form>
+		
+		
+	</div>
+</body>
+</html>
