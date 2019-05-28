@@ -56,8 +56,14 @@ class Chat{
 	//--- 이벤트에 따른 반응
 	ontext(conn,str){
 		console.log(this+".ontext("+conn.user.nick+","+str+")");
-		var mo = new MsgObj(JSON.parse(str))
-		this.reqHandler(conn.user,mo)
+		try{
+			var mo = new MsgObj(JSON.parse(str))	
+			this.reqHandler(conn.user,mo)
+		}catch(e){
+			console.error(e);
+		}
+		
+		
 	}
 	onconnect(conn){
 		console.log(this+".onconnect("+conn.user+")");
