@@ -46,7 +46,7 @@ if(nowebserver){
 			}
 			var steam = fs.createReadStream(requrl)
 			steam.pipe(res).on('finish', function(e) {
-				console.log(e);
+				// console.log(e);
 			}).on('error', function(e) {
 				console.log(e);
 			})
