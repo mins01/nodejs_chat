@@ -9,22 +9,22 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<link rel="shortcut icon" href="http://www.mins01.com/favicon.ico">	
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+	
 	<!-- <script src="/js/ForGoogle.js"></script> -->
 	<!-- google analytics -->
 	<!-- <script>ForGoogle.analytics()</script> -->
 	
-
+	
 	<!-- jquery 관련 -->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>  
-
-
+	
+	
 	<!-- 부트스트랩 4 : IE8지원안됨! -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous"> 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script> 
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
 	<!-- vue.js -->
-	<!-- <script src="https://cdn.jsdelivr.net/npm/vue"></script> -->
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
 	
 	<!-- meta og -->
 	
@@ -40,44 +40,39 @@
 	
 	<script src="client.js"></script>
 	<script src="MsgObj.js"></script>
+	<script src="controller.js"></script>
+	<link rel="stylesheet" href="client.css" crossorigin="anonymous"> 
+	
 	<script>
 	var cl = new Client();
-	cl.onmessage = function(event){
-			// var res = JSON.parse(event.data);
-			console.log(this+".!onmessage("+event.data+")");
-			$("#output").prepend('<li class="list-group-item">'+event.data+'</li>')
-		}
-	$(function(){
-		
-		cl.connect();
-		setTimeout(function(){
-			var mo = new MsgObj();
-			mo.cmd = "talk";
-			mo.rid = "robby";
-			mo.val = "talking";
-			cl.send(mo);
-		},1000)
-	})
+	// cl.onmessage = function(event){
+	// 	// var res = JSON.parse(event.data);
+	// 	console.log(this+".!onmessage("+event.data+")");
+	// 	$("#msgbox ul").prepend('<li class="list-group-item">'+event.data+'</li>')
+	// }
 	
-	function form_submit(f){
-		var mo = new MsgObj();
-		mo.cmd = "talk";
-		mo.rid = "robby";
-		mo.val = f.msg.value;
-		f.msg.value="";
-		cl.send(mo);
-		
-	}
+	$(function(){
+		controller.init();
+		cl.onmessage = controller.resHandler.bind(controller);
+		cl.connect();
+		// setTimeout(function(){
+		// 	var mo = new MsgObj();
+		// 	mo.cmd = "talk";
+		// 	mo.rid = "robby";
+		// 	mo.val = "talking";
+		// 	cl.send(mo);
+		// },1000)
+	})
 	</script>
 	<style>
 	.outbox{
 		position: fixed;left:5px;right:5px;bottom:5px;top:5px;
 		display: flex;
-    /* flex-wrap: wrap; */
+		/* flex-wrap: wrap; */
 		/* flex: 1 1 0; */
 		flex-direction: column;
 	}
-	#output{
+	#msgbox{
 		flex: 1 0 100px;
 		overflow-y: scroll;
 	}
@@ -88,16 +83,43 @@
 </head>
 <body>
 	<div class="container">
-		<form action="#" onsubmit="form_submit(this); return false;">
-			<div class="outbox">
-				<div id="output">
-					<ul class="list-group">
-						<li class="list-group-item"></li>
-					</ul>
+		<form action="#" onsubmit="controller.onsubmit(this); return false;">
+			
+			<div class="chat-box" id="chatApp">
+				<header class="room">
+					<h3>{{ room.subject }} ({{ room.userCount }})</h3>
+				</header>
+				<div class="content">
+					<article class="msgs">
+						<div class="scroll-y">
+							<ul class="list-group" id="msgsBox">
+								<li class="list-group-item msg"  v-for="msg in msgs" :data-cmd="msg.cmd">{{ msg.nick }} : {{ msg.val }}</li>
+							</ul>	
+						</div>
+						
+					</article>
+					<aside class="users  d-none d-md-block d-lg-block">
+						<div class="scroll-y">
+							<ul class="list-group" id="usersBox">
+								<li class="list-group-item active" >users</li>
+								<li class="list-group-item" v-for="user in room.users">{{ user.nick }}</li>
+							</ul>
+						</div>
+						
+					</aside>
 				</div>
-				<div id="input">
-					<input name="msg" type="text" class="form-control" />
-				</div>	
+				<footer class="input">
+					<div class="inputMsg input-group">
+							<div class="input-group-prepend d-none d-md-block d-lg-block">
+						    <span class="input-group-text">{{ user.nick }}</span>
+						  </div>
+							<input name="msg" type="text" placeholder="input massage" class="form-control" />
+							<div class="input-group-append d-none d-sm-block d-md-block d-lg-block">
+								<button class="btn btn-outline-secondary" type="button">send</button>
+							</div>
+					</div>
+				</footer>
+				
 			</div>	
 		</form>
 		

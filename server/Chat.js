@@ -1,4 +1,5 @@
 const RoomManager = require("./RoomManager.js");
+const UserManager = require("./UserManager.js");
 const Room = require("./Room.js");
 const User = require("./User.js");
 const MsgObj = require("./MsgObj.js");
@@ -10,8 +11,9 @@ class Chat{
 		
 		this.limitUsers = 10;
 		this.rm = new RoomManager();
-		// this.um;
-		this.rm.create("robby","로비");
+		this.um = new UserManager();
+		// 기본 방 생성
+		this.rm.create("robby","ROBBY - nodejs_chat");
 	}
 	
 	toString(){
@@ -21,10 +23,12 @@ class Chat{
 	addConn(conn){
 		var that = this;
 		console.log(this+".addConn() "+conn.socket.remoteAddress+":"+conn.socket.remotePort);
-		var uid = (new Date).getTime().toString()+conn.socket.remotePort
+		var uid = Math.floor(Math.random()*34).toString(34)+conn.socket.remotePort.toString(34)+(new Date).getTime().toString(34)
 		var user = new User(conn,uid,uid);
 		conn.user = user;
+		this.um.add(user);
 		this.rm.join('robby',user);
+		user.sync();
 		// 이벤트 등록
 		conn.on("text", function (str) {
 			that.ontext(this,str);
@@ -63,6 +67,7 @@ class Chat{
 		for( var [k,v] of conn.user.rooms){
 			v.leave(conn.user);
 		}
+		this.um.remove(conn.user);
 	}
 	onerror(conn,str){
 		console.log(this+".error() ["+conn.user+"] "+str);
@@ -80,6 +85,9 @@ class Chat{
 		if(mo.rid == undefined){ mo.rid = "";}
 		var room = this.rm.room(mo.rid);
 		if(!room){return;}
+		
+		mo.uid = user.uid;
+		
 		switch(mo.cmd){
 			case "msg": //일반 메세지
 			case "talk": //일반 메세지
@@ -90,10 +98,7 @@ class Chat{
 					user.send(mo);
 					return false;
 				}
-				// var mo = new MsgObj();
-				// mo['cmd'] = mo.cmd;
 				mo['nick'] = user.nick;
-				// mo['val'] = mo.val;
 				room.broadcast(mo);
 				break;
 			case "nick": //닉네임변경
@@ -101,18 +106,6 @@ class Chat{
 				break;
 			case "room": //room 메세지
 				this.rm.reqHandler(user,req);
-				break;
-			case "game": //게임 메세지
-				//console.log(room);
-				if(room.game){
-					room.game.reqHandler(user,mo);
-				}else{
-					// var mo = new MsgObj();
-					mo.clear()
-					mo['cmd'] = "notice";
-					mo['val'] = "게임이 없습니다.";
-					room.broadcast(mo);
-				}
 				break;
 		}
 		return true;

@@ -4,7 +4,7 @@
 class UserManager {
 	constructor(){
 		console.log("constructor "+this+"()");
-		this.users = {};
+		this.users = new Map();
 	}
 	
 	toString(){
@@ -13,27 +13,30 @@ class UserManager {
 	
 	add(user){
 		console.log(this+".addUser("+user+")");
-		if(this.users[user.uid]){
+		if(this.users.has(user.uid)){
 			return false;
 		}
-		this.users[user.uid] = user;
+		this.users.set(user.uid,user);
 	}
 	
 	remove(user){
 		console.log(this+".onremove("+user+")");
-		if(!this.users[user.uid]){
+		if(!this.users.has(user.uid)){
 			return false;
 		}
-		delete this.users[user.uid];
+		this.users.delete(user.uid);
 		return true;
+	}
+	
+	get size(){
+		return this.users.size;
 	}
 	
 	broadcast(mo){
 		console.log(this+".broadcast("+mo+")");
-
-		for(var x in this.users){
-			this.users[x].send(mo);
-		}
+		this.users.forEach(function(v,k,m){
+			v.send(mo);
+		})
 	}
 	
 }

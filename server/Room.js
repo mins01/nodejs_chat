@@ -1,11 +1,12 @@
 // const UserManager = require("./UserManager.js");
 const MsgObj = require("./MsgObj.js");
+const ExtendedMap = require("./ExtendedMap.js");
 
 
 class Room{
 	constructor(rid,subject,opt){
 		this.rid = rid;
-		this.users = {};
+		this.users = new ExtendedMap();
 		this.subject = subject;
 		this.opt = Object.assign({"limitUsers":10},opt);
 		// this.um = new UserManager();
@@ -13,6 +14,15 @@ class Room{
 	}
 	toString(){
 		return this.constructor.name+"#"+this.rid;
+	}
+	toJSON(){
+		// console.log(this.users,this.users.toJSON);
+		return {
+			"rid":this.rid,
+			"users":this.users.toJSON(),
+			"userCount":this.users.size,
+			"subject":this.subject,
+		}
 	}
 	
 	get limitUsers(){
@@ -24,54 +34,57 @@ class Room{
 	}
 	
 	join(user){
-		this.add(user);
 		console.log(this+".join("+user+")" );
+		this.add(user);
 		var mo = new MsgObj();
 		mo.cmd = "notice";
-		mo.rid = this.rid;
-		mo.val = "join User : "+user.nick;
-		this.add(user);
+		mo.val = "Join User ["+user.nick+"]";
 		this.broadcast(mo)
+		this.sync();
 	}
 	leave(user){
-		this.add(user);
 		console.log(this+".leave("+user+")" );
 		var mo = new MsgObj();
 		mo.cmd = "notice";
-		mo.rid = this.rid;
-		mo.val = "leave User : "+user.nick;
+		mo.val = "Leave User ["+user.nick+"]";
 		this.remove(user);
 		this.broadcast(mo);
+		this.sync();
 	}
-	
-	
-	
+	sync(){
+		var mo = new MsgObj();
+		mo.cmd = "room";
+		mo.action = "sync";
+		mo.val = this.toJSON();
+		this.broadcast(mo)
+	}	
 	
 	add(user){
 		console.log(this+".add("+user+")");
-		if(this.users[user.uid]){
+		if(this.users.has(user.uid)){
 			return false;
 		}
-		this.users[user.uid] = user;
+		this.users.set(user.uid,user);
 		user.rooms.set(this.rid,this); //유저에 방 연결
 	}
 	
 	remove(user){
 		console.log(this+".onremove("+user+")");
-		if(!this.users[user.uid]){
+		if(!this.users.has(user.uid)){
 			return false;
 		}
 		user.rooms.delete(this.rid);
-		delete this.users[user.uid];
+		this.users.delete(user.uid);
 		return true;
 	}
 	
 	broadcast(mo){
+		mo.rid = this.rid;
 		console.log(this+".broadcast("+mo+")");
 
-		for(var x in this.users){
-			this.users[x].send(mo);
-		}
+		this.users.forEach(function(v,k,m){
+			v.send(mo);
+		})
 	}
 
 }
