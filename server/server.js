@@ -34,6 +34,7 @@ if(nowebserver){
 		if(!requrl || requrl=='/'){
 			requrl = "/client.html";
 		}
+		requrl = requrl.replace(/\.\.+/g,'').replace(/\/\/+/g,'')
 		requrl = "../client"+requrl;	
 		if(fs.existsSync(requrl)){
 			console.log(req.connection.remoteAddress +":"+requrl+":OK");
