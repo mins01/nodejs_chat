@@ -64,10 +64,14 @@ class Chat{
 	}
 	onclose(conn, code, reason){
 		console.log(this+".onclose("+conn.user+","+code+","+reason+")" );
-		for( var [k,v] of conn.user.rooms){
-			v.leave(conn.user);
+		if(conn.user){
+			for( var [k,v] of conn.user.rooms){
+				v.leave(conn.user);
+			}
+			this.um.remove(conn.user);
+			delete conn.user;	
 		}
-		this.um.remove(conn.user);
+		
 	}
 	onerror(conn,str){
 		console.log(this+".error() ["+conn.user+"] "+str);

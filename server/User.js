@@ -27,7 +27,12 @@ class User {
 	
 	send(mo){
 		mo.time = (new Date()).getTime();
-		this.conn.sendText(mo.toJson());
+		try{
+				this.conn.sendText(mo.toJson());
+		}catch(e){
+			console.log(e);
+		}
+		
 	}
 	
 	// broadcast(mo){
