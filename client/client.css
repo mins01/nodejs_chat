@@ -69,6 +69,7 @@
 
 .msg .nick{
 	font-weight: bold;
+	margin-right: 0.5em;
 }
 .msg .val{
 	white-space: pre-wrap;
@@ -104,16 +105,26 @@
 
 }
 
-
-.msg[data-app="notice"]{
+.msg[data-fun="notice"] .nick,
+.msg[data-fun="error"] .nick,
+.msg[data-fun="whisper"] .nick,
+.msg[data-fun="system"] .nick{
+	text-transform: uppercase;
+}
+.msg[data-fun="notice"]{
 	background-color: #fffacd;
 	font-weight: bold;
 }
-.msg[data-app="error"]{
+.msg[data-fun="error"]{
 	background-color: #ff7f50;
 	font-weight: bold;
 }
-.msg[data-app="whisper"]{
+.msg[data-fun="whisper"]{
 	background-color: #add8e6;
 	font-weight: bold;
+}
+.msg[data-fun="system"]{
+	background-color: #d2691e;
+	font-weight: bold;
+	color: #fff;
 }

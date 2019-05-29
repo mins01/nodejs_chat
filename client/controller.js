@@ -27,17 +27,17 @@ let controller = (function(){
 		},
 		"onopen":function(event){
 			console.log(this+".onopen()",event);
-			var json = {"app":"notice","val":"Connection success","nick":"#CLIENT#"}
+			var json = {"app":"msg","fun":"notice","val":"Connection success","nick":"#CLIENT#"}
 			this.v.msgs.push(json)
 		},
 		"onclose":function(event){
 			console.log(this+".onclose()",event);
-			var json = {"app":"notice","val":"Connection closed","nick":"#CLIENT#"}
+			var json = {"app":"msg","fun":"notice","val":"Connection closed","nick":"#CLIENT#"}
 			this.v.msgs.push(json)
 		},
 		"onerror":function(event){
 			console.log(this+".onerror()",event);
-			var json = {"app":"notice","val":"Error","nick":"#CLIENT#"}
+			var json = {"app":"msg","fun":"notice","val":"Error","nick":"#CLIENT#"}
 			this.v.msgs.push(json)
 		},
 		"onmessage" :function(event){
@@ -55,6 +55,7 @@ let controller = (function(){
 				case "error":this.errorHandler(json);break;
 				case "notice":this.noticeHandler(json);break;
 				case "whisper":this.whisperHandler(json);break;
+				case "msg":this.msgHandler(json);break;
 				case "talk":this.talkHandler(json);break;
 				case "room":this.roomHandler(json);break;
 				case "user":this.userHandler(json);break;
@@ -68,8 +69,14 @@ let controller = (function(){
 		"userHandler":function(json){
 			this.v.user = json.val;
 		},
-		"talkHandler":function(json){
+		"msgHandler":function(json){
+			if(!json.nick){
+				json.nick = json.fun;
+			}
 			this.pushMsgs(json);
+		},
+		"talkHandler":function(json){
+			console.error("X");
 		},
 		"errorHandler":function(json){
 			json.nick = json.app;
@@ -77,11 +84,10 @@ let controller = (function(){
 			this.client.close();
 		},
 		"noticeHandler":function(json){
-			json.nick = json.app;
-			this.pushMsgs(json);
+			console.error("X");
 		},
 		"whisperHandler":function(json){
-			this.pushMsgs(json);
+			console.error("X");
 		},
 		"pushMsgs":function(json){
 			if(this.v.msgs.length>100){
@@ -108,15 +114,11 @@ let controller = (function(){
 			this.send(mo);
 		},
 		"formMsgOnSubmit":function(f){
-			var mo = new MsgObj();
-			mo.app = "talk";
-			mo.val = f.msg.value;
-			f.msg.value="";
-			if(!mo.val.trim().length){
+			if(!f.val.value.trim().length){
 				return;
 			}
-			this.send(mo);
-
+			this.sendFromForm(f);
+			f.val.value = "";
 		},
 		"openModalSetting":function(){
 			$("#nick_val").val(this.v.user.nick)

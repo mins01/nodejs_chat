@@ -66,7 +66,8 @@ class Chat{
 	ontext(conn,str){
 		console.log(this+".ontext("+conn.user.nick+","+str+")");
 		try{
-			var mo = new MsgObj(JSON.parse(str))
+			var mo = new MsgObj()
+			mo.load(JSON.parse(str))
 			this.reqHandler(conn.user,mo)
 		}catch(e){
 			console.error(e);
@@ -108,16 +109,7 @@ class Chat{
 		switch(mo.app){
 			case "msg": //일반 메세지
 			case "talk": //일반 메세지
-			if(mo.val.length>1023){
-				var mo = new MsgObj();
-				mo.app = "whisper";
-				mo.nick = "#SYSTEM#";
-				mo.val = "Too long content";
-				user.send(mo);
-				return false;
-			}
-			mo['nick'] = user.nick;
-			room.broadcast(mo);
+			this.msgHandler(user,mo,room);
 			break;
 			case "nick": //닉네임변경
 			this.um.nick(user,mo.val);
@@ -129,10 +121,8 @@ class Chat{
 			this.roomHandler(user,mo,room);
 			break;
 			default:
-			var mo2 = new MsgObj();
-			mo2.app = "whisper";
-			mo2.nick = "#SYSTEM#";
-			mo2.val = "not support : "+mo;
+			var mo2 = new MsgObj("msg","system","not support : "+mo);
+			mo2.rid = room.rid;
 			user.send(mo2);
 			return false;
 			break;
@@ -140,15 +130,22 @@ class Chat{
 		return true;
 	}
 
+	msgHandler(user,mo,room){
+		if(mo.val.length>1024){
+			var mo2 = new MsgObj("msg","system","Too long content");
+			user.send(mo2);
+			return false;
+		}
+		mo['nick'] = user.nick;
+		room.broadcast(mo);
+	}
 	roomHandler(user,mo,room){
 		var r;
 		switch (mo.fun) {
 			case "grantAdmin":
 			if(!room.checkPassword(mo.val)){
-				var mo2 = new MsgObj();
-				mo2.app = "whisper";
-				mo2.rid = this.rid;
-				mo2.val = "Wrong password";
+				var mo2 = new MsgObj("msg","system","Wrong password");
+				mo2.rid = room.rid;
 				user.send(mo2);
 			}else if(room.grantAdmin(user,mo.val)){
 				room.sync();
@@ -165,9 +162,7 @@ class Chat{
 			if(!room.isAdmin(user)){
 				console.warn("is not admin");
 			}else if(room.setSubject(mo.val)){
-				var mo2 = new MsgObj();
-				mo2.app = "notice";
-				mo2.val = "Change subject : "+mo.val;
+				var mo2 = new MsgObj("msg","notice","The subject has been changed to '"+mo.val+"'.");
 				room.broadcast(mo2);
 				room.sync();
 			}
@@ -176,9 +171,8 @@ class Chat{
 			if(!room.isAdmin(user)){
 				console.warn("is not admin");
 			}else if(r = room.setMaxUserCount(mo.val)){
-				var mo2 = new MsgObj();
-				mo2.app = "notice";
-				mo2.val = "Change maxUserCount : "+r;
+				var mo2 = new MsgObj("msg","notice","The maximum user count has been changed to "+mo.val+".");
+
 				room.broadcast(mo2);
 				room.sync();
 			}

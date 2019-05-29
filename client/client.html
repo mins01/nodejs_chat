@@ -90,7 +90,7 @@
 				<article class="msgs">
 					<div class="scroll-y">
 						<ul class="list-group" id="msgsBox">
-							<li class="list-group-item msg"  v-for="msg in msgs" :data-app="msg.app">
+							<li class="list-group-item msg"  v-for="msg in msgs" :data-app="msg.app" :data-fun="msg.fun">
 								<span class="nick d-inline-block">{{ msg.nick }}</span>
 								<span class="val d-inline-block">{{ msg.val }}</span>
 							</li>
@@ -110,11 +110,13 @@
 			</div>
 			<footer class="input">
 				<form action="#" name="formMsg" onsubmit="controller.formMsgOnSubmit(this); return false;">
+					<input name="app" type="hidden" value="msg" />
+					<input name="fun" type="hidden" value="talk" />
 					<div class="inputMsg input-group">
 						<div class="input-group-prepend d-none d-md-block d-lg-block">
 							<span class="input-group-text">{{ user.nick }}</span>
 						</div>
-						<input id="input_msg" name="msg" type="text" maxlength="1000" placeholder="input massage" class="form-control"  />
+						<input id="input_msg" name="val" type="text" maxlength="1000" placeholder="input massage" class="form-control"  />
 						<div class="input-group-append d-none d-sm-block d-md-block d-lg-block">
 							<button class="btn btn-outline-secondary" type="submit">send</button>
 						</div>

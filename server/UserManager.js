@@ -34,19 +34,14 @@ class UserManager {
 	nick(user,nick){
 		console.log(this+".nick("+user+","+nick+")");
 		if(!this.hasNick(nick)){
-			var mo = new MsgObj();
-			mo.app = "notice";
-			mo.val = "Nickname change : "+user.nick+" => "+nick;
+			var mo = new MsgObj("msg","notice","'"+user.nick+"' changed its name to '+nick+'.");
 			user.nick = nick;
 			user.sync();
 			user.broadcast(mo);
 			user.syncRooms();
 
 		}else{
-			var mo = new MsgObj();
-			mo.app = "whisper";
-			mo.nick = "#SYSTEM#"
-			mo.val = "Nickname ["+nick+"] already in use";
+			var mo = new MsgObj("msg","system","'"+nick+"' is already a nickname in use.");
 			user.send(mo);
 		}
 	}

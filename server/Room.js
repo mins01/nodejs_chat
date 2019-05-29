@@ -69,9 +69,7 @@ class Room{
 
 		}else{
 			this.adminUids.add(user.uid);
-			var mo = new MsgObj();
-			mo.app = "notice";
-			mo.val = user.nick+" is Admin";
+			var mo = new MsgObj("msg","notice",user.nick+" become a administrator.");
 			this.broadcast(mo)
 			return true;
 		}
@@ -80,9 +78,7 @@ class Room{
 	revokeAdmin(user){
 		if(this.isAdmin(user)){
 			this.adminUids.delete(user.uid);
-			var mo = new MsgObj();
-			mo.app = "notice";
-			mo.val = user.nick+" is not Admin";
+			var mo = new MsgObj("msg","notice",user.nick+" was fired from a administrator.");
 			this.broadcast(mo)
 			return true;
 		}
@@ -92,16 +88,12 @@ class Room{
 	join(user){
 		console.log(this+".join("+user+")" );
 		if(this.maxUserCount <= this.userCount){
-			var mo = new MsgObj();
-			mo.app = "error";
-			mo.val = "maxUserCount <= userCount";
+			var mo = new MsgObj("msg","system","Exceeds the maximum user count.");
 			user.send(mo);
 			return false;
 		}else{
 			this.add(user);
-			var mo = new MsgObj();
-			mo.app = "notice";
-			mo.val = "Join User ["+user.nick+"]";
+			var mo = new MsgObj("msg","notice",user.nick+" entered the room.");
 			this.broadcast(mo)
 			this.sync();
 		}
@@ -109,9 +101,7 @@ class Room{
 	}
 	leave(user){
 		console.log(this+".leave("+user+")" );
-		var mo = new MsgObj();
-		mo.app = "notice";
-		mo.val = "Leave User ["+user.nick+"]";
+		var mo = new MsgObj("msg","notice",user.nick+" left the room.");
 		this.remove(user);
 		this.broadcast(mo);
 		this.sync();
