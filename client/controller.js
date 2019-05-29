@@ -27,8 +27,9 @@ let controller = (function(){
 		},
 		"jsonHandler" :function(json){
 			switch (json.cmd) {
+				case "error":
 				case "notice":
-					json.nick = "notice";
+					json.nick = json.cmd;
 				case "talk":
 					if(this.v.msgs.length>100){
 						this.v.msgs.shift()
@@ -45,6 +46,21 @@ let controller = (function(){
 				default:
 				
 			}
+		},
+		"roomHandler":function(json){
+			
+		},
+		"userHandler":function(json){
+			
+		},
+		"talkHandler":function(json){
+			
+		},
+		"errorHandler":function(json){
+			
+		},
+		"noticeHandler":function(json){
+			
 		},
 		"onsubmit":function(f){
 			var mo = new MsgObj();

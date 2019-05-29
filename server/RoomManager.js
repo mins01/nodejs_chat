@@ -29,7 +29,7 @@ class RoomManager {
 		}
 		var opt = {};
 		this.rooms[rid] = new Room(rid,subject,opt);
-		this.rooms[rid].limitUsers = 5;
+		this.rooms[rid].maxUserCount = 5;
 		return this.rooms[rid];
 	}
 	

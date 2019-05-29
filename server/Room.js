@@ -8,7 +8,7 @@ class Room{
 		this.rid = rid;
 		this.users = new ExtendedMap();
 		this.subject = subject;
-		this.opt = Object.assign({"limitUsers":10},opt);
+		this.opt = Object.assign({"maxUserCount":10},opt);
 		// this.um = new UserManager();
 		console.log("constructor "+this+"()");
 	}
@@ -20,27 +20,39 @@ class Room{
 		return {
 			"rid":this.rid,
 			"users":this.users.toJSON(),
-			"userCount":this.users.size,
+			"userCount":this.userCount,
+			"maxUserCount":this.maxUserCount,
 			"subject":this.subject,
 		}
 	}
-	
-	get limitUsers(){
-		return this.opt.limitUsers
+	get userCount(){
+		return this.users.size
+	}	
+	get maxUserCount(){
+		return this.opt.maxUserCount
 	}
-	set limitUsers(limitUsers){
-		console.log(this+".limitUsers=",limitUsers);
-		this.opt.limitUsers = limitUsers;
+	set maxUserCount(maxUserCount){
+		console.log(this+".maxUserCount=",maxUserCount);
+		this.opt.maxUserCount = maxUserCount;
 	}
 	
 	join(user){
 		console.log(this+".join("+user+")" );
-		this.add(user);
-		var mo = new MsgObj();
-		mo.cmd = "notice";
-		mo.val = "Join User ["+user.nick+"]";
-		this.broadcast(mo)
-		this.sync();
+		if(this.maxUserCount <= this.userCount){
+			var mo = new MsgObj();
+			mo.cmd = "error";
+			mo.val = "maxUserCount <= userCount";
+			user.send(mo);
+			return false;
+		}else{
+			this.add(user);
+			var mo = new MsgObj();
+			mo.cmd = "notice";
+			mo.val = "Join User ["+user.nick+"]";
+			this.broadcast(mo)
+			this.sync();	
+		}
+		
 	}
 	leave(user){
 		console.log(this+".leave("+user+")" );

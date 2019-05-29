@@ -9,7 +9,7 @@ class Chat{
 	constructor(){
 		console.log("Chat()");
 		
-		this.limitUsers = 10;
+		// this.limitUsers = 10;
 		this.rm = new RoomManager();
 		this.um = new UserManager();
 		// 기본 방 생성
@@ -84,10 +84,7 @@ class Chat{
 	onerror(conn,str){
 		console.log(this+".error() ["+conn.user+"] "+str);
 		try{
-			if(conn.user){
-				conn.user.isError = true;
-				this.removeConn(conn);	
-			}
+			this.removeConn(conn);	
 		}catch(e){
 			console.error(e);			
 		}

@@ -53,4 +53,9 @@
 	background-color: #fffacd;
 	font-weight: bold;
 }
+.msg[data-cmd="error"]{
+	background-color: #ff7f50;
+	font-weight: bold;
+}
+
 
