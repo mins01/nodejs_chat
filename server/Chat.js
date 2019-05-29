@@ -52,6 +52,15 @@ class Chat{
 		// });
 		
 	}
+	removeConn(conn){
+		if(conn.user){
+			for( var [k,v] of conn.user.rooms){
+				v.leave(conn.user);
+			}
+			this.um.remove(conn.user);
+			delete conn.user;	
+		}
+	}
 	
 	//--- 이벤트에 따른 반응
 	ontext(conn,str){
@@ -70,18 +79,18 @@ class Chat{
 	}
 	onclose(conn, code, reason){
 		console.log(this+".onclose("+conn.user+","+code+","+reason+")" );
-		if(conn.user){
-			for( var [k,v] of conn.user.rooms){
-				v.leave(conn.user);
-			}
-			this.um.remove(conn.user);
-			delete conn.user;	
-		}
-		
+		this.removeConn(conn);
 	}
 	onerror(conn,str){
 		console.log(this+".error() ["+conn.user+"] "+str);
-		conn.close();
+		try{
+			if(conn.user){
+				conn.user.isError = true;
+				this.removeConn(conn);	
+			}
+		}catch(e){
+			console.error(e);			
+		}
 	}
 	
 	/**
