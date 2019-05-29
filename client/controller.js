@@ -14,10 +14,31 @@ let controller = (function(){
 				}
 			})
 			this.client = client;
-			this.client.onmessage = this.resHandler.bind(this);
+			this.client.onopen = this.onopen.bind(this);
+			this.client.onclose = this.onclose.bind(this);
+			this.client.onerror = this.onerror.bind(this);
+			this.client.onmessage = this.onmessage.bind(this);
 			this.client.connect();
 		},
-		"resHandler" :function(event){
+		"toString":function(){
+			return "controller";
+		},
+		"onopen":function(event){
+			console.log(this+".onopen()",event);
+			var json = {"cmd":"notice","val":"Connection success","nick":"#CLIENT#"}
+			this.v.msgs.push(json)
+		},
+		"onclose":function(event){
+			console.log(this+".onclose()",event);
+			var json = {"cmd":"notice","val":"Connection closed","nick":"#CLIENT#"}
+			this.v.msgs.push(json)
+		},
+		"onerror":function(event){
+			console.log(this+".onerror()",event);
+			var json = {"cmd":"notice","val":"Error","nick":"#CLIENT#"}
+			this.v.msgs.push(json)
+		},
+		"onmessage" :function(event){
 			try {
 				this.jsonHandler(JSON.parse(event.data));	
 			} catch (e) {
@@ -25,45 +46,46 @@ let controller = (function(){
 			} finally {
 				
 			}
-			
 		},
+
 		"jsonHandler" :function(json){
 			switch (json.cmd) {
-				case "error":
-				case "notice":
-					json.nick = json.cmd;
-				case "whisper":
-				case "talk":
-					if(this.v.msgs.length>100){
-						this.v.msgs.shift()
-					}
-					this.v.msgs.push(json)
-				break;
-				case "room":
-					this.v.room = json.val
-				break;
-				case "user":
-					this.v.user = json.val;
-				break;
-				
+				case "error":this.errorHandler(json);break;
+				case "notice":this.noticeHandler(json);break;
+				case "whisper":this.whisperHandler(json);break;
+				case "talk":this.talkHandler(json);break;
+				case "room":this.roomHandler(json);break;
+				case "user":this.userHandler(json);break;
 				default:
 				
 			}
 		},
 		"roomHandler":function(json){
-			
+			this.v.room = json.val
 		},
 		"userHandler":function(json){
-			
+			this.v.user = json.val;
 		},
 		"talkHandler":function(json){
-			
+			this.pushMsgs(json);
 		},
 		"errorHandler":function(json){
-			
+			json.nick = json.cmd;
+			this.pushMsgs(json);
+			this.client.close();
 		},
 		"noticeHandler":function(json){
-			
+			json.nick = json.cmd;
+			this.pushMsgs(json);
+		},
+		"whisperHandler":function(json){
+			this.pushMsgs(json);
+		},
+		"pushMsgs":function(json){
+			if(this.v.msgs.length>100){
+				this.v.msgs.shift()
+			}
+			this.v.msgs.push(json)
 		},
 		"send":function(mo){
 			if(mo.rid==null) mo.rid = this.v.room.rid;

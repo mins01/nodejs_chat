@@ -55,6 +55,10 @@
 	overflow-y: hidden;
 }
 
+.msg .nick{
+	font-weight: bold;
+}
+
 #chatApp div.content aside.users{
 	flex: 0 1 200px;
 	padding: 5px;

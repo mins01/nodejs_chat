@@ -51,10 +51,16 @@ class Client {
 	}
 	
 	send(mo){
-		this.conn.send(mo.toJson())
+		if(this.conn){
+			this.conn.send(mo.toJson())
+		}else{
+			console.error("Not connected");
+		}
 	}
 	close(){
-		this.conn.close()
+		if(this.conn){
+			this.conn.close()
+		}
 		this.conn = null;
 	}
 }
