@@ -86,12 +86,8 @@
 					<div class="scroll-y">
 						<ul class="list-group" id="msgsBox">
 							<li class="list-group-item msg"  v-for="msg in msgs" :data-cmd="msg.cmd">
-								<div class="nick d-inline">
-									{{ msg.nick }}
-								</div>
-								<div class="val d-inline">
-									{{ msg.val }}
-								</div>
+								<span class="nick d-inline-block">{{ msg.nick }}</span>
+								<span class="val d-inline-block">{{ msg.val }}</span>
 							</li>
 						</ul>	
 					</div>

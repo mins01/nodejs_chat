@@ -59,6 +59,10 @@
 .msg .nick{
 	font-weight: bold;
 }
+.msg .val{
+	white-space: pre-wrap;
+	word-break: break-all;
+}
 
 #chatApp div.content aside.users{
 	flex: 0 1 200px;
