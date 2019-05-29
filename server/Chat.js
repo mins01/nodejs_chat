@@ -99,6 +99,7 @@ class Chat{
 		//console.log(mo);
 		if(mo.val == undefined){ mo.val = "";}
 		if(mo.rid == undefined){ mo.rid = "";}
+		if(mo.uid == undefined){ mo.uid = user.uid;} //사용자 아이디 강제 추가
 		var room = this.rm.room(mo.rid);
 		if(!room){return;}
 		
@@ -118,7 +119,7 @@ class Chat{
 				room.broadcast(mo);
 				break;
 			case "nick": //닉네임변경
-				room.nick(user,mo.val);
+				this.um.nick(user,mo.val);
 				break;
 			case "room": //room 메세지
 				this.rm.reqHandler(user,req);

@@ -40,14 +40,21 @@ class User {
 		
 	}
 	
-	// broadcast(mo){
-	// 	console.log(this+".broadcast("+mo+")");
-	// 
-	// 	this.rooms.forEach(function(v,k,m){
-	// 		v.broadcast(mo);
-	// 	})
-	// }
-	// 
+	broadcast(mo){
+		console.log(this+".broadcast("+mo+")");
+	
+		this.rooms.forEach(function(v,k,m){
+			v.broadcast(mo);
+		})
+	}
+	syncRooms(){
+		console.log(this+".syncRooms()");
+	
+		this.rooms.forEach(function(v,k,m){
+			v.sync();
+		})
+	}
+	
 	sync(){
 		var mo = new MsgObj();
 		mo.cmd = "user";
