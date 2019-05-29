@@ -130,6 +130,7 @@ let controller = (function(){
 
 		"openModalRoom":function(){
 			$("#room_setSubject_val").val(this.v.room.subject)
+			$("#room_setMaxUserCount_val").val(this.v.room.maxUserCount)
 
 			$('#modalRoom').modal('show')
 		},

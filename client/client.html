@@ -192,17 +192,27 @@
 								<button class="btn btn-warning" type="submit">Revoke</button>
 							</div>
 						</form>
-					</div>
-					<hr>
-					<div class="modal-body">
+						<hr>
 						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
-							<label for="nick_val">Subject</label>
+							<label for="nick_val">Change subject</label>
 							<input name="app" type="hidden" value="room" />
 							<input name="fun" type="hidden" value="setSubject" />
 							<div class="inputMsg input-group">
 								<input id="room_setSubject_val" name="val" type="text" required placeholder="subject" class="form-control" maxlength="100"/>
 								<div class="input-group-append ">
-									<button class="btn btn-warning" type="submit">setSubject</button>
+									<button class="btn btn-warning" type="submit">Change</button>
+								</div>
+							</div>
+						</form>
+						<hr>
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
+							<label for="nick_val">Change MaxUserCount</label>
+							<input name="app" type="hidden" value="room" />
+							<input name="fun" type="hidden" value="setMaxUserCount" />
+							<div class="inputMsg input-group">
+								<input id="room_setMaxUserCount_val" name="val" type="number" required placeholder="num.." class="form-control" min="2" max="100"/>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">Change</button>
 								</div>
 							</div>
 						</form>

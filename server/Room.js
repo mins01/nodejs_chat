@@ -46,6 +46,14 @@ class Room{
 		console.log(this+".maxUserCount=",maxUserCount);
 		this.opt.maxUserCount = maxUserCount;
 	}
+	setMaxUserCount(maxUserCount){
+		maxUserCount = parseInt(maxUserCount)
+		if(isNaN(maxUserCount)){
+			return false;
+		}
+		this.maxUserCount= Math.max(1,maxUserCount);
+		return this.maxUserCount;
+	}
 	setSubject(subject){
 		this.subject = subject
 		return true;

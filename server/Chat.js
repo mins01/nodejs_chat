@@ -141,14 +141,15 @@ class Chat{
 	}
 
 	roomHandler(user,mo,room){
+		var r;
 		switch (mo.fun) {
 			case "grantAdmin":
 			if(!room.checkPassword(mo.val)){
-				var mo = new MsgObj();
-				mo.app = "whisper";
-				mo.rid = this.rid;
-				mo.val = "Wrong password";
-				user.send(mo);
+				var mo2 = new MsgObj();
+				mo2.app = "whisper";
+				mo2.rid = this.rid;
+				mo2.val = "Wrong password";
+				user.send(mo2);
 			}else if(room.grantAdmin(user,mo.val)){
 				room.sync();
 			}
@@ -164,13 +165,26 @@ class Chat{
 			if(!room.isAdmin(user)){
 				console.warn("is not admin");
 			}else if(room.setSubject(mo.val)){
-				var mo = new MsgObj();
-				mo.app = "notice";
-				mo.val = "Change subject : "+mo.val;
-				room.broadcast(mo);
+				var mo2 = new MsgObj();
+				mo2.app = "notice";
+				mo2.val = "Change subject : "+mo.val;
+				room.broadcast(mo2);
 				room.sync();
 			}
 			break;
+			case "setMaxUserCount":
+			if(!room.isAdmin(user)){
+				console.warn("is not admin");
+			}else if(r = room.setMaxUserCount(mo.val)){
+				var mo2 = new MsgObj();
+				mo2.app = "notice";
+				mo2.val = "Change maxUserCount : "+r;
+				room.broadcast(mo2);
+				room.sync();
+			}
+			break;
+
+
 			console.warn("not support mo","roomHandler("+user+","+mo+","+room+")");
 			default:
 		}
