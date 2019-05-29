@@ -108,10 +108,11 @@ class Chat{
 		switch(mo.cmd){
 			case "msg": //일반 메세지
 			case "talk": //일반 메세지
-				if(mo.val.length>200){
+				if(mo.val.length>1023){
 					var mo = new MsgObj();
-					mo.cmd = "error";
-					mo.val = "비정상적인 요청 입니다.";
+					mo.cmd = "whisper";
+					mo.nick = "#SYSTEM#";
+					mo.val = "Too long content";
 					user.send(mo);
 					return false;
 				}
