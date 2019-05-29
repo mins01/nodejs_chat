@@ -11,7 +11,7 @@ let controller = (function(){
 				updated:function(){
 					var thisC = this;
 					$(".msgs .scroll-y").scrollTop($(".msgs .scroll-y").height()+9999999)
-					
+
 					// $(document.body).attr("data-is-admin",$("#chatApp").attr("data-is-admin"));
 				}
 			})
@@ -27,31 +27,31 @@ let controller = (function(){
 		},
 		"onopen":function(event){
 			console.log(this+".onopen()",event);
-			var json = {"cmd":"notice","val":"Connection success","nick":"#CLIENT#"}
+			var json = {"app":"notice","val":"Connection success","nick":"#CLIENT#"}
 			this.v.msgs.push(json)
 		},
 		"onclose":function(event){
 			console.log(this+".onclose()",event);
-			var json = {"cmd":"notice","val":"Connection closed","nick":"#CLIENT#"}
+			var json = {"app":"notice","val":"Connection closed","nick":"#CLIENT#"}
 			this.v.msgs.push(json)
 		},
 		"onerror":function(event){
 			console.log(this+".onerror()",event);
-			var json = {"cmd":"notice","val":"Error","nick":"#CLIENT#"}
+			var json = {"app":"notice","val":"Error","nick":"#CLIENT#"}
 			this.v.msgs.push(json)
 		},
 		"onmessage" :function(event){
 			try {
-				this.jsonHandler(JSON.parse(event.data));	
+				this.jsonHandler(JSON.parse(event.data));
 			} catch (e) {
 				console.error(e);
 			} finally {
-				
+
 			}
 		},
 
 		"jsonHandler" :function(json){
-			switch (json.cmd) {
+			switch (json.app) {
 				case "error":this.errorHandler(json);break;
 				case "notice":this.noticeHandler(json);break;
 				case "whisper":this.whisperHandler(json);break;
@@ -59,7 +59,7 @@ let controller = (function(){
 				case "room":this.roomHandler(json);break;
 				case "user":this.userHandler(json);break;
 				default:
-				
+
 			}
 		},
 		"roomHandler":function(json){
@@ -72,12 +72,12 @@ let controller = (function(){
 			this.pushMsgs(json);
 		},
 		"errorHandler":function(json){
-			json.nick = json.cmd;
+			json.nick = json.app;
 			this.pushMsgs(json);
 			this.client.close();
 		},
 		"noticeHandler":function(json){
-			json.nick = json.cmd;
+			json.nick = json.app;
 			this.pushMsgs(json);
 		},
 		"whisperHandler":function(json){
@@ -92,29 +92,31 @@ let controller = (function(){
 		"send":function(mo){
 			if(mo.rid==null) mo.rid = this.v.room.rid;
 			this.client.send(mo);
+			console.log("send("+mo+")");
 		},
 		"sendFromForm":function(f){
+
 			var mo = new MsgObj();
-			mo.cmd = f.cmd.value
+			mo.app = f.app.value
 			mo.val = "";
 			if(f.val){
 				mo.val = f.val.value
 			}
-			if(f.act){
-				mo.act = f.act.value
+			if(f.fun){
+				mo.fun = f.fun.value
 			}
 			this.send(mo);
 		},
 		"formMsgOnSubmit":function(f){
 			var mo = new MsgObj();
-			mo.cmd = "talk";
+			mo.app = "talk";
 			mo.val = f.msg.value;
 			f.msg.value="";
 			if(!mo.val.trim().length){
 				return;
 			}
 			this.send(mo);
-			
+
 		},
 		"openModalSetting":function(){
 			$("#nick_val").val(this.v.user.nick)
@@ -125,16 +127,18 @@ let controller = (function(){
 			$('#modalSetting').modal('hide')
 			$('#input_msg').focus();
 		},
-		
-		"openModalAdmin":function(){
-			$('#modalAdmin').modal('show')
+
+		"openModalRoom":function(){
+			$("#room_setSubject_val").val(this.v.room.subject)
+
+			$('#modalRoom').modal('show')
 		},
-		"hideModalAdmin":function(){
-			$('#modalAdmin').modal('hide')
+		"hideModalRoom":function(){
+			$('#modalRoom').modal('hide')
 			$('#input_msg').focus();
 		}
-		
+
 	}
-	
+
 	return controller;
 })()

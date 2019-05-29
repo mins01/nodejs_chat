@@ -38,7 +38,7 @@ class Room{
 	}
 	get userCount(){
 		return this.users.size
-	}	
+	}
 	get maxUserCount(){
 		return this.opt.maxUserCount
 	}
@@ -46,60 +46,63 @@ class Room{
 		console.log(this+".maxUserCount=",maxUserCount);
 		this.opt.maxUserCount = maxUserCount;
 	}
-	
-	admin(user,password){
-		if(this.adminUids.has(user.uid)){
-			
-		}else if(password!= this.adminPassword){
-			var mo = new MsgObj();
-			mo.cmd = "whisper";
-			mo.rid = this.rid;
-			mo.val = "Wrong password";
-			user.send(mo);
+	setSubject(subject){
+		this.subject = subject
+		return true;
+	}
+	isAdmin(user){
+		return this.adminUids.has(user.uid)
+	}
+	checkPassword(password){
+		return (password == this.adminPassword);
+	}
+	grantAdmin(user,password){
+		if(this.isAdmin(user.uid)){
+
 		}else{
 			this.adminUids.add(user.uid);
 			var mo = new MsgObj();
-			mo.cmd = "notice";
+			mo.app = "notice";
 			mo.val = user.nick+" is Admin";
 			this.broadcast(mo)
 			return true;
 		}
 		return false;
 	}
-	dropAdmin(user,password){
-		if(this.adminUids.has(user.uid)){
+	revokeAdmin(user){
+		if(this.isAdmin(user)){
 			this.adminUids.delete(user.uid);
 			var mo = new MsgObj();
-			mo.cmd = "notice";
+			mo.app = "notice";
 			mo.val = user.nick+" is not Admin";
 			this.broadcast(mo)
 			return true;
 		}
 		return false;
 	}
-	
+
 	join(user){
 		console.log(this+".join("+user+")" );
 		if(this.maxUserCount <= this.userCount){
 			var mo = new MsgObj();
-			mo.cmd = "error";
+			mo.app = "error";
 			mo.val = "maxUserCount <= userCount";
 			user.send(mo);
 			return false;
 		}else{
 			this.add(user);
 			var mo = new MsgObj();
-			mo.cmd = "notice";
+			mo.app = "notice";
 			mo.val = "Join User ["+user.nick+"]";
 			this.broadcast(mo)
-			this.sync();	
+			this.sync();
 		}
-		
+
 	}
 	leave(user){
 		console.log(this+".leave("+user+")" );
 		var mo = new MsgObj();
-		mo.cmd = "notice";
+		mo.app = "notice";
 		mo.val = "Leave User ["+user.nick+"]";
 		this.remove(user);
 		this.broadcast(mo);
@@ -107,12 +110,12 @@ class Room{
 	}
 	sync(){
 		var mo = new MsgObj();
-		mo.cmd = "room";
-		mo.action = "sync";
+		mo.app = "room";
+		mo.fun = "sync";
 		mo.val = this.toJSON();
 		this.broadcast(mo)
-	}	
-	
+	}
+
 	add(user){
 		console.log(this+".add("+user+")");
 		if(this.users.has(user.uid)){
@@ -121,7 +124,7 @@ class Room{
 		this.users.set(user.uid,user);
 		user.rooms.set(this.rid,this); //유저에 방 연결
 	}
-	
+
 	remove(user){
 		console.log(this+".onremove("+user+")");
 		if(!this.users.has(user.uid)){
@@ -132,7 +135,7 @@ class Room{
 		this.adminUids.delete(user.uid);
 		return true;
 	}
-	
+
 	broadcast(mo){
 		mo.rid = this.rid;
 		console.log(this+".broadcast("+mo+")");

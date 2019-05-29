@@ -7,27 +7,27 @@
 	<meta http-equiv="Content-Style-Type" content="text/css">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<link rel="shortcut icon" href="http://www.mins01.com/favicon.ico">	
+	<link rel="shortcut icon" href="http://www.mins01.com/favicon.ico">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	
+
 	<!-- <script src="/js/ForGoogle.js"></script> -->
 	<!-- google analytics -->
 	<!-- <script>ForGoogle.analytics()</script> -->
-	
-	
+
+
 	<!-- jquery 관련 -->
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>  
-	
-	
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" crossorigin="anonymous"></script>
+
+
 	<!-- 부트스트랩 4 : IE8지원안됨! -->
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous"> 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script> 
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
 	<!-- vue.js -->
 	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-	
+
 	<!-- meta og -->
-	
+
 	<meta property="og:title" content="nodejs_chat">
 	<meta property="og:description" content="nodejs_chat">
 	<meta name="og:image" content="http://www.mins01.com/img/logo.gif">
@@ -35,16 +35,16 @@
 	<meta property="og:image:height" content="70" />
 	<meta property="og:site_name" content="nodejs_chat" />
 	<meta property="og:type" content="website">
-	
+
 	<!-- //meta og -->
-	
+
 	<script src="Client.js"></script>
 	<script src="MsgObj.js"></script>
 	<script src="controller.js"></script>
-	<link rel="stylesheet" href="client.css" crossorigin="anonymous"> 
-	
+	<link rel="stylesheet" href="client.css" crossorigin="anonymous">
+
 	<script>
-	var cl = Client.instance;	
+	var cl = Client.instance;
 	$(function(){
 		controller.init(cl);
 		$('#input_msg').focus();
@@ -70,33 +70,33 @@
 <body>
 	<div class="container">
 		<h1 class="sr-only">nodejs_chat</h1>
-		
-		
-		
-		
+
+
+
+
 	</div>
 	<div  id="chatApp"  :data-is-admin="(room.users[user.uid]!=null &amp;&amp; room.users[user.uid].isAdmin)?1:0">
 		<div class="chat-box" id="chat-box">
 			<header class="room">
 				<div class="subject text-overflow-ellipsis">{{ room.subject }}</div>
-				<div class="openModalAdmin show-is-admin">
-					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalAdmin()">A</button>	
+				<div class="openModalRoom show-is-admin">
+					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalRoom()">🚪</button>
 				</div>
 				<div class="openModalSetting">
-					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalSetting()">⚙️</button>	
+					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalSetting()">⚙️</button>
 				</div>
 			</header>
 			<div class="content">
 				<article class="msgs">
 					<div class="scroll-y">
 						<ul class="list-group" id="msgsBox">
-							<li class="list-group-item msg"  v-for="msg in msgs" :data-cmd="msg.cmd">
+							<li class="list-group-item msg"  v-for="msg in msgs" :data-app="msg.app">
 								<span class="nick d-inline-block">{{ msg.nick }}</span>
 								<span class="val d-inline-block">{{ msg.val }}</span>
 							</li>
-						</ul>	
+						</ul>
 					</div>
-					
+
 				</article>
 				<aside class="users  d-none d-md-block d-lg-block">
 					<div class="scroll-y">
@@ -105,7 +105,7 @@
 							<li class="list-group-item text-overflow-ellipsis" v-for="user in room.users" :title="user.nick" :data-is-admin="user.isAdmin?1:0">{{ user.nick }}</li>
 						</ul>
 					</div>
-					
+
 				</aside>
 			</div>
 			<footer class="input">
@@ -121,11 +121,11 @@
 					</div>
 				</form>
 			</footer>
-			
-		</div>	
-		
-		
-		
+
+		</div>
+
+
+
 		<!-- modalSetting -->
 		<div class="modal fade" id="modalSetting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -136,10 +136,10 @@
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
-					<div class="modal-body">				
+					<div class="modal-body">
 						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalSetting();return false;">
 							<label for="nick_val">Change nickname</label>
-							<input name="cmd" type="hidden" value="nick" />
+							<input name="app" type="hidden" value="nick" />
 							<div class="inputMsg input-group">
 								<input id="nick_val" name="val" type="text" required placeholder="nick" class="form-control" maxlength="20" pattern="^[^\s\n\x00-\x2F\x3A-\x40\x5B-\x60\x7B~\x7F]{2,20}$" />
 								<div class="input-group-append ">
@@ -150,21 +150,21 @@
 								<small class="form-text text-muted">Excluding special symbols</small>
 							</div>
 						</form>
-						
+
 						<form  class="form-group hide-is-admin" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalSetting();return false;">
 							<hr />
-							<label for="nick_val">Admin</label>
-							<input name="cmd" type="hidden" value="room" />
-							<input name="act" type="hidden" value="admin" />
+							<label for="nick_val">Get permission for admin</label>
+							<input name="app" type="hidden" value="room" />
+							<input name="fun" type="hidden" value="grantAdmin" />
 							<div class="inputMsg input-group">
 								<input id="room_admin_val" name="val" type="password" required placeholder="password" class="form-control" maxlength="20"/>
 								<div class="input-group-append ">
-									<button class="btn btn-warning" type="submit">Set admin</button>
+									<button class="btn btn-warning" type="submit">Grant</button>
 								</div>
 							</div>
 						</form>
-						
-						
+
+
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -172,28 +172,39 @@
 				</div>
 			</div>
 		</div>
-		<!-- modalAdmin -->
-		<div class="modal fade" id="modalAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<!-- modalRoom -->
+		<div class="modal fade" id="modalRoom" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title">Admin</h5>
+						<h5 class="modal-title">Room Setting</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
-					<div class="modal-body">				
-						
-						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalAdmin();return false;">
-							<label for="nick_val">Drop admin</label>
-							<input name="cmd" type="hidden" value="room" />
-							<input name="act" type="hidden" value="dropAdmin" />
+					<div class="modal-body">
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalRoom(this);return false;">
+							<label for="nick_val">Revoke admin</label>
+							<input name="app" type="hidden" value="room" />
+							<input name="fun" type="hidden" value="revokeAdmin" />
 							<input name="val" type="hidden" required placeholder="password" class="form-control" maxlength="20"/>
 							<div class="text-center">
-								<button class="btn btn-warning" type="submit">Drop admin</button>
+								<button class="btn btn-warning" type="submit">Revoke</button>
 							</div>
-							
-							
+						</form>
+					</div>
+					<hr>
+					<div class="modal-body">
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
+							<label for="nick_val">Subject</label>
+							<input name="app" type="hidden" value="room" />
+							<input name="fun" type="hidden" value="setSubject" />
+							<div class="inputMsg input-group">
+								<input id="room_setSubject_val" name="val" type="text" required placeholder="subject" class="form-control" maxlength="100"/>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">setSubject</button>
+								</div>
+							</div>
 						</form>
 					</div>
 					<div class="modal-footer">
@@ -203,6 +214,6 @@
 			</div>
 		</div>
 	</div>
-	
+
 </body>
 </html>

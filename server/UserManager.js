@@ -5,11 +5,11 @@ class UserManager {
 		console.log("constructor "+this+"()");
 		this.users = new Map();
 	}
-	
+
 	toString(){
 		return this.constructor.name;
 	}
-	
+
 	add(user){
 		console.log(this+".addUser("+user+")");
 		if(this.users.has(user.uid)){
@@ -17,7 +17,7 @@ class UserManager {
 		}
 		this.users.set(user.uid,user);
 	}
-	
+
 	remove(user){
 		console.log(this+".onremove("+user+")");
 		if(!this.users.has(user.uid)){
@@ -26,25 +26,25 @@ class UserManager {
 		this.users.delete(user.uid);
 		return true;
 	}
-	
+
 	get size(){
 		return this.users.size;
 	}
-	
+
 	nick(user,nick){
 		console.log(this+".nick("+user+","+nick+")");
 		if(!this.hasNick(nick)){
 			var mo = new MsgObj();
-			mo.cmd = "notice";
+			mo.app = "notice";
 			mo.val = "Nickname change : "+user.nick+" => "+nick;
 			user.nick = nick;
 			user.sync();
 			user.broadcast(mo);
 			user.syncRooms();
-			
+
 		}else{
 			var mo = new MsgObj();
-			mo.cmd = "whisper";
+			mo.app = "whisper";
 			mo.nick = "#SYSTEM#"
 			mo.val = "Nickname ["+nick+"] already in use";
 			user.send(mo);
@@ -62,7 +62,7 @@ class UserManager {
 			v.send(mo);
 		})
 	}
-	
+
 }
 
 module.exports = UserManager;

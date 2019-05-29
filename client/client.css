@@ -5,7 +5,7 @@
 }
 #chatApp[data-is-admin="1"] .hide-is-admin{
 	display: none !important;
-}  
+}
 
 #chat-box{
 	position: fixed;left:5px;right:5px;bottom:5px;top:5px;
@@ -20,7 +20,7 @@
 	flex: 0 0 0;
 	text-align: center;
 	display: flex;
-	flex-direction: row;	
+	flex-direction: row;
 }
 #chat-box header.room .subject{
 	flex:1 0 0;
@@ -31,7 +31,7 @@
 	align-items: center; */
 }
 #chat-box header.room .openModalSetting ,
-#chat-box header.room .openModalAdmin
+#chat-box header.room .openModalRoom
 {
 	flex:0 0 0;
 	display: flex;
@@ -84,7 +84,7 @@
 
 
 #chat-box div.content aside.users .list-group-item{
-	
+
 }
 
 #chat-box div.content aside.users .list-group-item[data-is-admin="1"]::before{
@@ -105,18 +105,15 @@
 }
 
 
-.msg[data-cmd="notice"]{
+.msg[data-app="notice"]{
 	background-color: #fffacd;
 	font-weight: bold;
 }
-.msg[data-cmd="error"]{
+.msg[data-app="error"]{
 	background-color: #ff7f50;
 	font-weight: bold;
 }
-.msg[data-cmd="whisper"]{
+.msg[data-app="whisper"]{
 	background-color: #add8e6;
 	font-weight: bold;
 }
-
-
-
