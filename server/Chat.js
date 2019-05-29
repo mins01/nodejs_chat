@@ -13,7 +13,7 @@ class Chat{
 		this.rm = new RoomManager();
 		this.um = new UserManager();
 		// 기본 방 생성
-		this.rm.create("robby","ROBBY - nodejs_chat");
+		this.rm.create("robby","ROBBY - pw:1234");
 	}
 	
 	toString(){
@@ -122,12 +122,32 @@ class Chat{
 			case "nick": //닉네임변경
 				this.um.nick(user,mo.val);
 				break;
-			case "room": //room 메세지
+			case "roomManager": //room 관리자 메세지
 				this.rm.reqHandler(user,req);
 				break;
+			case "room": //room 메세지
+				this.roomHandler(user,mo,room);
+			break;
 		}
 		return true;
 	}
+	
+	roomHandler(user,mo,room){
+		switch (mo.act) {
+			case "admin":
+			if(room.admin(user,mo.val)){
+					room.sync();
+			}
+			break;
+			case "dropAdmin":
+			if(room.dropAdmin(user)){
+					room.sync();
+			}
+			break;
+			default:
+		}
+	}
+	
 }
 
 

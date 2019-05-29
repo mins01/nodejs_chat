@@ -1,6 +1,13 @@
 @charset "UTF-8";
 
-#chatApp{
+#chatApp[data-is-admin="0"] .show-is-admin{
+	display: none !important;
+}
+#chatApp[data-is-admin="1"] .hide-is-admin{
+	display: none !important;
+}  
+
+#chat-box{
 	position: fixed;left:5px;right:5px;bottom:5px;top:5px;
 	display: flex;
 	/* flex-wrap: wrap; */
@@ -9,13 +16,13 @@
 }
 
 
-#chatApp header.room{
+#chat-box header.room{
 	flex: 0 0 0;
 	text-align: center;
 	display: flex;
 	flex-direction: row;	
 }
-#chatApp header.room .subject{
+#chat-box header.room .subject{
 	flex:1 0 0;
 	font-size: 1.5em;
 	font-weight: bold;
@@ -23,13 +30,17 @@
 	justify-content: center;
 	align-items: center; */
 }
-#chatApp header.room .openModalSetting{
+#chat-box header.room .openModalSetting ,
+#chat-box header.room .openModalAdmin
+{
 	flex:0 0 0;
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	margin:0 1px;
 }
-#chatApp header.room .userCount{
+
+#chat-box header.room .userCount{
 	flex:0 0 0;
 	display: flex;
 	justify-content: center;
@@ -38,18 +49,18 @@
 }
 
 
-#chatApp footer.input{
+#chat-box footer.input{
 	flex: 0 0 0;
 }
 
-#chatApp div.content{
+#chat-box div.content{
 	flex: 1 0 0;
 	display: flex;
 	flex-direction: row;
 	min-height: 0;
 }
 
-#chatApp div.content article.msgs{
+#chat-box div.content article.msgs{
 	flex: 1 0 300px;
 	padding: 5px 0;
 	height: 100%;
@@ -64,7 +75,7 @@
 	word-break: break-all;
 }
 
-#chatApp div.content aside.users{
+#chat-box div.content aside.users{
 	flex: 0 1 200px;
 	padding: 5px;
 	position: relative;
@@ -72,14 +83,20 @@
 }
 
 
-#chatApp div.content aside.users .list-group-item{
+#chat-box div.content aside.users .list-group-item{
 	
 }
+
+#chat-box div.content aside.users .list-group-item[data-is-admin="1"]::before{
+	content: "👑";
+	margin-right: 0.5em;
+}
+
 .text-overflow-ellipsis{
 	white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-#chatApp .scroll-y{
+#chat-box .scroll-y{
 	overflow-x: hidden;
 	overflow-y: auto;
 	height: 100%;

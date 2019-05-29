@@ -5,8 +5,8 @@ class User {
 		this.conn = conn;
 		this.uid = uid;
 		this.nick = nick;
-		this.isRoot = false;
-		this.isAdmin = false;
+		// this.isRoot = false;
+		// this.isAdmin = false;
 		this.rooms = new Map();
 		console.log("constructor "+this+"()");
 		console.log("User Info",conn.socket.remoteAddress,conn.socket.remotePort);

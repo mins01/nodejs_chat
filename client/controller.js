@@ -6,11 +6,13 @@ let controller = (function(){
 				data: {
 					"msgs":[],
 					"room":{"subject":"-","users":{}},
-					"user":{"nick":"##"},
+					"user":{"nick":"##","uid":""},
 				},
 				updated:function(){
 					var thisC = this;
 					$(".msgs .scroll-y").scrollTop($(".msgs .scroll-y").height()+9999999)
+					
+					// $(document.body).attr("data-is-admin",$("#chatApp").attr("data-is-admin"));
 				}
 			})
 			this.client = client;
@@ -94,7 +96,13 @@ let controller = (function(){
 		"sendFromForm":function(f){
 			var mo = new MsgObj();
 			mo.cmd = f.cmd.value
-			mo.val = f.val.value
+			mo.val = "";
+			if(f.val){
+				mo.val = f.val.value
+			}
+			if(f.act){
+				mo.act = f.act.value
+			}
 			this.send(mo);
 		},
 		"formMsgOnSubmit":function(f){
@@ -110,10 +118,19 @@ let controller = (function(){
 		},
 		"openModalSetting":function(){
 			$("#nick_val").val(this.v.user.nick)
+			$("#room_admin_val").val("")
 			$('#modalSetting').modal('show')
 		},
 		"hideModalSetting":function(){
 			$('#modalSetting').modal('hide')
+			$('#input_msg').focus();
+		},
+		
+		"openModalAdmin":function(){
+			$('#modalAdmin').modal('show')
+		},
+		"hideModalAdmin":function(){
+			$('#modalAdmin').modal('hide')
 			$('#input_msg').focus();
 		}
 		

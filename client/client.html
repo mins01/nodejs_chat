@@ -70,16 +70,21 @@
 <body>
 	<div class="container">
 		<h1 class="sr-only">nodejs_chat</h1>
-		<div class="chat-box" id="chatApp">
+		
+		
+		
+		
+	</div>
+	<div  id="chatApp"  :data-is-admin="(room.users[user.uid]!=null &amp;&amp; room.users[user.uid].isAdmin)?1:0">
+		<div class="chat-box" id="chat-box">
 			<header class="room">
 				<div class="subject text-overflow-ellipsis">{{ room.subject }}</div>
-				<div class="userCount d-none d-sm-flex d-md-flex d-lg-flex">
-					({{ room.userCount }} / {{ room.maxUserCount }})
+				<div class="openModalAdmin show-is-admin">
+					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalAdmin()">A</button>	
 				</div>
 				<div class="openModalSetting">
 					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalSetting()">⚙️</button>	
 				</div>
-				
 			</header>
 			<div class="content">
 				<article class="msgs">
@@ -96,8 +101,8 @@
 				<aside class="users  d-none d-md-block d-lg-block">
 					<div class="scroll-y">
 						<ul class="list-group" id="usersBox">
-							<li class="list-group-item active" >users</li>
-							<li class="list-group-item text-overflow-ellipsis" v-for="user in room.users" :title="user.nick">{{ user.nick }}</li>
+							<li class="list-group-item active text-center" ><b>users ({{ room.userCount }}/{{ room.maxUserCount }})</b></li>
+							<li class="list-group-item text-overflow-ellipsis" v-for="user in room.users" :title="user.nick" :data-is-admin="user.isAdmin?1:0">{{ user.nick }}</li>
 						</ul>
 					</div>
 					
@@ -121,42 +126,83 @@
 		
 		
 		
-	</div>
-	
-	<!-- modal -->
-	<div class="modal fade" id="modalSetting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Setting</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">				
-					<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalSetting();return false;">
-						<label for="nick_val">Change nickname</label>
-						<input name="cmd" type="hidden" value="nick" />
-						<div class="inputMsg input-group">
-							<input id="nick_val" name="val" type="text" placeholder="nick" class="form-control" maxlength="20" pattern="^[^\s\n\x00-\x2F\x3A-\x40\x5B-\x60\x7B~\x7F]{2,20}$" />
-							<div class="input-group-append ">
-								<button class="btn btn-warning" type="submit">change</button>
+		<!-- modalSetting -->
+		<div class="modal fade" id="modalSetting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Setting</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">				
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalSetting();return false;">
+							<label for="nick_val">Change nickname</label>
+							<input name="cmd" type="hidden" value="nick" />
+							<div class="inputMsg input-group">
+								<input id="nick_val" name="val" type="text" required placeholder="nick" class="form-control" maxlength="20" pattern="^[^\s\n\x00-\x2F\x3A-\x40\x5B-\x60\x7B~\x7F]{2,20}$" />
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">change</button>
+								</div>
 							</div>
-						</div>
-						<div>
-							<small class="form-text text-muted">Excluding special symbols</small>
-						</div>
-					</form>
-					
+							<div>
+								<small class="form-text text-muted">Excluding special symbols</small>
+							</div>
+						</form>
+						
+						<form  class="form-group hide-is-admin" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalSetting();return false;">
+							<hr />
+							<label for="nick_val">Admin</label>
+							<input name="cmd" type="hidden" value="room" />
+							<input name="act" type="hidden" value="admin" />
+							<div class="inputMsg input-group">
+								<input id="room_admin_val" name="val" type="password" required placeholder="password" class="form-control" maxlength="20"/>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">Set admin</button>
+								</div>
+							</div>
+						</form>
+						
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+		<!-- modalAdmin -->
+		<div class="modal fade" id="modalAdmin" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Admin</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">				
+						
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalAdmin();return false;">
+							<label for="nick_val">Drop admin</label>
+							<input name="cmd" type="hidden" value="room" />
+							<input name="act" type="hidden" value="dropAdmin" />
+							<input name="val" type="hidden" required placeholder="password" class="form-control" maxlength="20"/>
+							<div class="text-center">
+								<button class="btn btn-warning" type="submit">Drop admin</button>
+							</div>
+							
+							
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	
-	
 	
 </body>
 </html>
