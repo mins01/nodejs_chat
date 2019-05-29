@@ -44,24 +44,10 @@
 	<link rel="stylesheet" href="client.css" crossorigin="anonymous"> 
 	
 	<script>
-	var cl = Client.instance;
-	// cl.onmessage = function(event){
-	// 	// var res = JSON.parse(event.data);
-	// 	console.log(this+".!onmessage("+event.data+")");
-	// 	$("#msgbox ul").prepend('<li class="list-group-item">'+event.data+'</li>')
-	// }
-	
+	var cl = Client.instance;	
 	$(function(){
-		controller.init();
-		cl.onmessage = controller.resHandler.bind(controller);
-		cl.connect();
-		// setTimeout(function(){
-		// 	var mo = new MsgObj();
-		// 	mo.cmd = "talk";
-		// 	mo.rid = "robby";
-		// 	mo.val = "talking";
-		// 	cl.send(mo);
-		// },1000)
+		controller.init(cl);
+		$('#input_msg').focus();
 	})
 	</script>
 	<style>
@@ -83,47 +69,98 @@
 </head>
 <body>
 	<div class="container">
-		<form action="#" onsubmit="controller.onsubmit(this); return false;">
-			
-			<div class="chat-box" id="chatApp">
-				<header class="room">
-					<h3>{{ room.subject }} ({{ room.userCount }})</h3>
-				</header>
-				<div class="content">
-					<article class="msgs">
-						<div class="scroll-y">
-							<ul class="list-group" id="msgsBox">
-								<li class="list-group-item msg"  v-for="msg in msgs" :data-cmd="msg.cmd">{{ msg.nick }} : {{ msg.val }}</li>
-							</ul>	
-						</div>
-						
-					</article>
-					<aside class="users  d-none d-md-block d-lg-block">
-						<div class="scroll-y">
-							<ul class="list-group" id="usersBox">
-								<li class="list-group-item active" >users</li>
-								<li class="list-group-item" v-for="user in room.users">{{ user.nick }}</li>
-							</ul>
-						</div>
-						
-					</aside>
+		<h1 class="sr-only">nodejs_chat</h1>
+		<div class="chat-box" id="chatApp">
+			<header class="room">
+				<div class="subject text-overflow-ellipsis">{{ room.subject }}</div>
+				<div class="userCount d-none d-sm-flex d-md-flex d-lg-flex">
+					({{ room.userCount }} / {{ room.maxUserCount }})
 				</div>
-				<footer class="input">
-					<div class="inputMsg input-group">
-							<div class="input-group-prepend d-none d-md-block d-lg-block">
-						    <span class="input-group-text">{{ user.nick }}</span>
-						  </div>
-							<input name="msg" type="text" placeholder="input massage" class="form-control" />
-							<div class="input-group-append d-none d-sm-block d-md-block d-lg-block">
-								<button class="btn btn-outline-secondary" type="button">send</button>
-							</div>
-					</div>
-				</footer>
+				<div class="openModalSetting">
+					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalSetting()">⚙️</button>	
+				</div>
 				
-			</div>	
-		</form>
+			</header>
+			<div class="content">
+				<article class="msgs">
+					<div class="scroll-y">
+						<ul class="list-group" id="msgsBox">
+							<li class="list-group-item msg"  v-for="msg in msgs" :data-cmd="msg.cmd">
+								<div class="nick d-inline">
+									{{ msg.nick }}
+								</div>
+								<div class="val d-inline">
+									{{ msg.val }}
+								</div>
+							</li>
+						</ul>	
+					</div>
+					
+				</article>
+				<aside class="users  d-none d-md-block d-lg-block">
+					<div class="scroll-y">
+						<ul class="list-group" id="usersBox">
+							<li class="list-group-item active" >users</li>
+							<li class="list-group-item text-overflow-ellipsis" v-for="user in room.users" :title="user.nick">{{ user.nick }}</li>
+						</ul>
+					</div>
+					
+				</aside>
+			</div>
+			<footer class="input">
+				<form action="#" name="formMsg" onsubmit="controller.formMsgOnSubmit(this); return false;">
+					<div class="inputMsg input-group">
+						<div class="input-group-prepend d-none d-md-block d-lg-block">
+							<span class="input-group-text">{{ user.nick }}</span>
+						</div>
+						<input id="input_msg" name="msg" type="text" placeholder="input massage" class="form-control"  />
+						<div class="input-group-append d-none d-sm-block d-md-block d-lg-block">
+							<button class="btn btn-outline-secondary" type="button">send</button>
+						</div>
+					</div>
+				</form>
+			</footer>
+			
+		</div>	
+		
 		
 		
 	</div>
+	
+	<!-- modal -->
+	<div class="modal fade" id="modalSetting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Setting</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">				
+					<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalSetting();return false;">
+						<label for="nick_val">Change nickname</label>
+						<input name="cmd" type="hidden" value="nick" />
+						<div class="inputMsg input-group">
+							<input id="nick_val" name="val" type="text" placeholder="nick" class="form-control" maxlength="20" pattern="^[^\s\n\x00-\x2F\x3A-\x40\x5B-\x60\x7B~\x7F]{2,20}$" />
+							<div class="input-group-append ">
+								<button class="btn btn-warning" type="submit">change</button>
+							</div>
+						</div>
+						<div>
+							<small class="form-text text-muted">Excluding special symbols</small>
+						</div>
+					</form>
+					
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+	
 </body>
 </html>

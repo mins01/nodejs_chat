@@ -12,7 +12,31 @@
 #chatApp header.room{
 	flex: 0 0 0;
 	text-align: center;
+	display: flex;
+	flex-direction: row;	
 }
+#chatApp header.room .subject{
+	flex:1 0 0;
+	font-size: 1.5em;
+	font-weight: bold;
+	/* display: flex;
+	justify-content: center;
+	align-items: center; */
+}
+#chatApp header.room .openModalSetting{
+	flex:0 0 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+#chatApp header.room .userCount{
+	flex:0 0 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	white-space: nowrap;
+}
+
 
 #chatApp footer.input{
 	flex: 0 0 0;
@@ -22,7 +46,6 @@
 	flex: 1 0 0;
 	display: flex;
 	flex-direction: row;
-	
 }
 
 #chatApp div.content article.msgs{
@@ -33,12 +56,19 @@
 }
 
 #chatApp div.content aside.users{
-	flex: 0 1 0;
+	flex: 0 1 200px;
 	padding: 5px;
 	position: relative;
+	min-width:100px;
 }
 
 
+#chatApp div.content aside.users .list-group-item{
+	
+}
+.text-overflow-ellipsis{
+	white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 
 #chatApp .scroll-y{
 	overflow-x: hidden;
@@ -57,5 +87,10 @@
 	background-color: #ff7f50;
 	font-weight: bold;
 }
+.msg[data-cmd="whisper"]{
+	background-color: #add8e6;
+	font-weight: bold;
+}
+
 
 

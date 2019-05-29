@@ -38,8 +38,10 @@ class UserManager {
 			mo.cmd = "notice";
 			mo.val = "Nickname change : "+user.nick+" => "+nick;
 			user.nick = nick;
+			user.sync();
 			user.broadcast(mo);
 			user.syncRooms();
+			
 		}else{
 			var mo = new MsgObj();
 			mo.cmd = "whisper";
