@@ -31,7 +31,8 @@
 	align-items: center; */
 }
 #chat-box header.room .openModalSetting ,
-#chat-box header.room .openModalRoom
+#chat-box header.room .openModalRoom,
+#chat-box header.room .openModalRoomManager
 {
 	flex:0 0 0;
 	display: flex;

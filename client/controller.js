@@ -58,9 +58,20 @@ let controller = (function(){
 				case "msg":this.msgHandler(json);break;
 				case "talk":this.talkHandler(json);break;
 				case "room":this.roomHandler(json);break;
+				case "roomManager":this.roomManagerHandler(json);break;
 				case "user":this.userHandler(json);break;
 				default:
-
+			}
+		},
+		"roomManagerHandler":function(json){
+			switch (json.fun) {
+				case "create":
+				this.msgHandler({"app":"msg","fun":"notice","val":"Created room","nick":"#CLIENT#"});
+				if(this.v.room.rid) this.send((new MsgObj({"app":"room","fun":"leave","val":this.v.room.rid})));
+				this.send((new MsgObj({"app":"roomManager","fun":"join","val":json.val})));
+				break;
+				default:
+					
 			}
 		},
 		"roomHandler":function(json){
@@ -138,6 +149,13 @@ let controller = (function(){
 		},
 		"hideModalRoom":function(){
 			$('#modalRoom').modal('hide')
+			$('#input_msg').focus();
+		},
+		"openModalRoomManager":function(){
+			$('#modalRoomManager').modal('show')
+		},
+		"hideModalRoomManager":function(){
+			$('#modalRoomManager').modal('hide')
 			$('#input_msg').focus();
 		}
 

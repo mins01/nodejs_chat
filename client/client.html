@@ -78,6 +78,9 @@
 	<div  id="chatApp"  :data-is-admin="(room.users[user.uid]!=null &amp;&amp; room.users[user.uid].isAdmin)?1:0">
 		<div class="chat-box" id="chat-box">
 			<header class="room">
+				<div class="openModalRoomManager">
+					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalRoomManager()">📁</button>
+				</div>
 				<div class="subject text-overflow-ellipsis">{{ room.subject }}</div>
 				<div class="openModalRoom show-is-admin">
 					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalRoom()">🚪</button>
@@ -129,7 +132,7 @@
 
 
 		<!-- modalSetting -->
-		<div class="modal fade" id="modalSetting" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal fade" id="modalSetting" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -175,7 +178,7 @@
 			</div>
 		</div>
 		<!-- modalRoom -->
-		<div class="modal fade" id="modalRoom" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal fade" id="modalRoom" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -213,6 +216,48 @@
 							<input name="fun" type="hidden" value="setMaxUserCount" />
 							<div class="inputMsg input-group">
 								<input id="room_setMaxUserCount_val" name="val" type="number" required placeholder="num.." class="form-control" min="2" max="100"/>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">Change</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- modalRoom -->
+		<div class="modal fade" id="modalRoomManager" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Room list</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
+							<label for="nick_val">Create Room</label>
+							<input name="app" type="hidden" value="roomManager" />
+							<input name="fun" type="hidden" value="create" />
+							<div class="inputMsg input-group">
+								<input name="val" type="text" required placeholder="Subject" class="form-control" maxlength="100"/>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">Create</button>
+								</div>
+							</div>
+						</form>
+						<hr>
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
+							<label for="nick_val">Change MaxUserCount</label>
+							<input name="app" type="hidden" value="room" />
+							<input name="fun" type="hidden" value="setMaxUserCount" />
+							<div class="inputMsg input-group">
+								<input name="val" type="number" required placeholder="num.." class="form-control" min="2" max="100"/>
 								<div class="input-group-append ">
 									<button class="btn btn-warning" type="submit">Change</button>
 								</div>

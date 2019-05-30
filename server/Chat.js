@@ -13,7 +13,7 @@ class Chat{
 		this.rm = new RoomManager();
 		this.um = new UserManager();
 		// 기본 방 생성
-		this.rm.create("robby","ROBBY - pw:1234");
+		this.rm.create("ROBBY - pw:1234","robby");
 	}
 
 	toString(){
@@ -27,7 +27,7 @@ class Chat{
 		var user = new User(conn,uid,uid);
 		conn.user = user;
 		this.um.add(user);
-		this.rm.join('robby',user);
+		this.rm.join(user,'robby');
 		user.sync();
 		// 이벤트 등록
 		conn.on("text", function (str) {
@@ -115,10 +115,10 @@ class Chat{
 			this.um.nick(user,mo.val);
 			break;
 			case "roomManager": //room 관리자 메세지
-			this.rm.reqHandler(user,req);
+			this.rm.reqHandler(user,mo);
 			break;
 			case "room": //room 메세지
-			this.roomHandler(user,mo,room);
+			room.roomHandler(user,mo);
 			break;
 			default:
 			var mo2 = new MsgObj("msg","system","not support : "+mo);
@@ -139,51 +139,6 @@ class Chat{
 		mo['nick'] = user.nick;
 		room.broadcast(mo);
 	}
-	roomHandler(user,mo,room){
-		var r;
-		switch (mo.fun) {
-			case "grantAdmin":
-			if(!room.checkPassword(mo.val)){
-				var mo2 = new MsgObj("msg","system","Wrong password");
-				mo2.rid = room.rid;
-				user.send(mo2);
-			}else if(room.grantAdmin(user,mo.val)){
-				room.sync();
-			}
-			break;
-			case "revokeAdmin":
-			if(!room.isAdmin(user)){
-				console.warn("is not admin");
-			}else if(room.revokeAdmin(user)){
-				room.sync();
-			}
-			break;
-			case "setSubject":
-			if(!room.isAdmin(user)){
-				console.warn("is not admin");
-			}else if(room.setSubject(mo.val)){
-				var mo2 = new MsgObj("msg","notice","The subject has been changed to '"+mo.val+"'.");
-				room.broadcast(mo2);
-				room.sync();
-			}
-			break;
-			case "setMaxUserCount":
-			if(!room.isAdmin(user)){
-				console.warn("is not admin");
-			}else if(r = room.setMaxUserCount(mo.val)){
-				var mo2 = new MsgObj("msg","notice","The maximum user count has been changed to "+mo.val+".");
-
-				room.broadcast(mo2);
-				room.sync();
-			}
-			break;
-
-
-			console.warn("not support mo","roomHandler("+user+","+mo+","+room+")");
-			default:
-		}
-	}
-
 }
 
 

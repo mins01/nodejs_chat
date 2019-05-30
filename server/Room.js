@@ -142,6 +142,60 @@ class Room{
 			v.send(mo);
 		})
 	}
+	
+	roomHandler(user,mo){
+		var room = this;
+		var r;
+		switch (mo.fun) {
+			case "grantAdmin":
+			if(!room.checkPassword(mo.val)){
+				var mo2 = new MsgObj("msg","system","Wrong password");
+				mo2.rid = room.rid;
+				user.send(mo2);
+			}else if(room.grantAdmin(user,mo.val)){
+				room.sync();
+			}
+			break;
+			case "revokeAdmin":
+			if(!room.isAdmin(user)){
+				console.warn("is not admin");
+			}else if(room.revokeAdmin(user)){
+				room.sync();
+			}
+			break;
+			case "setSubject":
+			if(!room.isAdmin(user)){
+				console.warn("is not admin");
+			}else if(room.setSubject(mo.val)){
+				var mo2 = new MsgObj("msg","notice","The subject has been changed to '"+mo.val+"'.");
+				room.broadcast(mo2);
+				room.sync();
+			}
+			break;
+			case "setMaxUserCount":
+			if(!room.isAdmin(user)){
+				console.warn("is not admin");
+			}else if(r = room.setMaxUserCount(mo.val)){
+				var mo2 = new MsgObj("msg","notice","The maximum user count has been changed to "+mo.val+".");
+
+				room.broadcast(mo2);
+				room.sync();
+			}
+			break;
+			
+			case "join":
+			if(room.join(user)){
+			}
+			break;
+			case "leave":
+			if(room.leave(user)){
+			}
+			break;
+
+			console.warn("not support mo","roomHandler("+user+","+mo+","+room+")");
+			default:
+		}
+	}
 
 }
 

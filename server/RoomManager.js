@@ -1,3 +1,4 @@
+const MsgObj = require("./MsgObj.js");
 const Room = require("./Room.js");
 
 class RoomManager {
@@ -17,8 +18,11 @@ class RoomManager {
 		return this.rooms[rid];
 	}
 	
-	create(rid,subject){
-		console.log(this+".createRoom("+rid+","+subject+")");
+	create(subject,rid){
+		if(rid==null){
+			var rid = Math.floor(Math.random()*34).toString(34)+(subject.length).toString(34)+(new Date).getTime().toString(34)
+		}
+		console.log(this+".createRoom("+subject+","+rid+")");
 		rid = rid.toString().substr(0,100);
 		subject = subject.toString().substr(0,100);
 		if(subject.length<2){
@@ -33,8 +37,7 @@ class RoomManager {
 		return this.rooms[rid];
 	}
 	
-	join(rid,user){
-		
+	join(user,rid){
 		var room = this.room(rid);
 		if(!room){
 			console.error("Not exists room.", rid);
@@ -42,6 +45,22 @@ class RoomManager {
 		}
 		console.log(this+".join("+room+","+user+")" );
 		room.join(user);
+	}
+	
+	reqHandler(user,mo){
+		var r;
+		switch (mo.fun) {
+			case "create":
+				if(r = this.create(mo.val)){
+					var mo2 = new MsgObj("roomManager","create",r.rid);
+					user.send(mo2)
+				}
+			break;
+			case "join":
+				if(this.join(user,mo.val)){
+				}
+			break;
+		}
 	}
 }
 

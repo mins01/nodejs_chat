@@ -1,6 +1,21 @@
 "use strict";
 
 class MsgObj {
+	constructor(app,fun,val){
+		if(typeof app =='object'){
+			this.load(app)
+		}else{
+			this.app = (app!=null)?app:"";
+			this.fun = (fun!=null)?fun:"";
+			this.val = (val!=null)?val:"";
+		}
+		
+	}
+	load(obj){
+		for(var x in obj){
+			this[x] = obj[x];
+		}
+	}
 	toString(){
 		return this.toJson();
 	}
@@ -10,17 +25,13 @@ class MsgObj {
 	clear(){
 		for(var x in this){
 			delete this[x];
-		}		
+		}
 	}
 }
-try{
-	module.exports = MsgObj;	
-}catch(e){
-	
-}
 
+//module.exports = MsgObj;
 
-// 
+//
 // var mo = new MsgObj()
 // mo.x = '1';
 // console.log(mo);
