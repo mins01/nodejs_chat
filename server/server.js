@@ -39,11 +39,11 @@ if(nowebserver){
 		if(fs.existsSync(requrl)){
 			console.log(req.connection.remoteAddress +":"+requrl+":OK");
 			if(requrl.indexOf(".js")>-1){
-				res.writeHead(200, {'Content-Type' : 'text/javascript'});
+				res.writeHead(200, {'Content-Type' : 'text/javascript','Cache-Control': 'public, max-age=500'});
 			}else if(requrl.indexOf(".css")>-1){
-				res.writeHead(200, {'Content-Type' : 'text/css'});
+				res.writeHead(200, {'Content-Type' : 'text/css','Cache-Control': 'public, max-age=500'});
 			}else{
-				res.writeHead(200, {'Content-Type' : 'text/html'});
+				res.writeHead(200, {'Content-Type' : 'text/html','Cache-Control': 'public, max-age=500'});
 			}
 			var steam = fs.createReadStream(requrl)
 			steam.pipe(res).on('finish', function(e) {
