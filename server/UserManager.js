@@ -35,7 +35,7 @@ class UserManager {
 	nick(user,nick){
 		console.log(this+".nick("+user+","+nick+")");
 		if(!this.hasNick(nick)){
-			var mo = new MsgObj("msg","notice","'"+user.nick+"' changed its name to '+nick+'.");
+			var mo = new MsgObj("msg","notice","'"+user.nick+"' changed its name to '"+nick+"'.");
 			user.nick = nick;
 			user.sync();
 			user.broadcast(mo);
