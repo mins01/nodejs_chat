@@ -64,7 +64,7 @@ class Room{
 	checkPassword(password){
 		return (password == this.adminPassword);
 	}
-	grantAdmin(user,password){
+	grantAdmin(user){
 		if(this.isAdmin(user.uid)){
 
 		}else{
@@ -93,7 +93,11 @@ class Room{
 			return false;
 		}else{
 			this.add(user);
-			var mo = new MsgObj("msg","notice",user.nick+" entered the room.");
+			if(this.users.size==1){
+				this.grantAdmin(user)
+			}
+			
+			var mo = new MsgObj("msg","notice",user.nick+" entered the room("+this.subject+").");
 			this.broadcast(mo)
 			this.sync();
 		}
@@ -101,10 +105,11 @@ class Room{
 	}
 	leave(user){
 		console.log(this+".leave("+user+")" );
-		var mo = new MsgObj("msg","notice",user.nick+" left the room.");
+		var mo = new MsgObj("msg","notice",user.nick+" left the room("+this.subject+").");
 		this.remove(user);
 		this.broadcast(mo);
 		this.sync();
+		user.send(mo);
 	}
 	sync(){
 		var mo = new MsgObj();
@@ -143,7 +148,7 @@ class Room{
 		})
 	}
 	
-	roomHandler(user,mo){
+	reqHandler(user,mo){
 		var room = this;
 		var r;
 		switch (mo.fun) {
@@ -152,7 +157,7 @@ class Room{
 				var mo2 = new MsgObj("msg","system","Wrong password");
 				mo2.rid = room.rid;
 				user.send(mo2);
-			}else if(room.grantAdmin(user,mo.val)){
+			}else if(room.grantAdmin(user)){
 				room.sync();
 			}
 			break;

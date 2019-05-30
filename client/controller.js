@@ -6,6 +6,7 @@ let controller = (function(){
 				data: {
 					"msgs":[],
 					"room":{"subject":"-","users":{}},
+					"roomManager":{"rooms":{}},
 					"user":{"nick":"##","uid":""},
 				},
 				updated:function(){
@@ -67,8 +68,10 @@ let controller = (function(){
 			switch (json.fun) {
 				case "create":
 				this.msgHandler({"app":"msg","fun":"notice","val":"Created room","nick":"#CLIENT#"});
-				if(this.v.room.rid) this.send((new MsgObj({"app":"room","fun":"leave","val":this.v.room.rid})));
-				this.send((new MsgObj({"app":"roomManager","fun":"join","val":json.val})));
+				this.join(json.val)
+				break;
+				case "sync":
+				this.v.roomManager = json.val;
 				break;
 				default:
 					
@@ -100,6 +103,9 @@ let controller = (function(){
 		"whisperHandler":function(json){
 			console.error("X");
 		},
+		
+		
+		
 		"pushMsgs":function(json){
 			if(this.v.msgs.length>100){
 				this.v.msgs.shift()
@@ -111,6 +117,11 @@ let controller = (function(){
 			this.client.send(mo);
 			console.log("send("+mo+")");
 		},
+		"join":function(rid){
+			if(this.v.room.rid==rid){return false;}
+			this.send((new MsgObj({"app":"roomManager","fun":"leave","val":this.v.room.rid})));
+			this.send((new MsgObj({"app":"roomManager","fun":"join","val":rid})));
+		},	
 		"sendFromForm":function(f){
 
 			var mo = new MsgObj();
@@ -152,6 +163,8 @@ let controller = (function(){
 			$('#input_msg').focus();
 		},
 		"openModalRoomManager":function(){
+			this.send((new MsgObj({"app":"roomManager","fun":"sync","val":""})));
+			$("#roomManager_rid_val").val(this.v.room.rid);
 			$('#modalRoomManager').modal('show')
 		},
 		"hideModalRoomManager":function(){

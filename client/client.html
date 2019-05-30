@@ -252,12 +252,13 @@
 							</div>
 						</form>
 						<hr>
-						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
-							<label for="nick_val">Change MaxUserCount</label>
-							<input name="app" type="hidden" value="room" />
-							<input name="fun" type="hidden" value="setMaxUserCount" />
+						<form  class="form-group" action="#" onsubmit="controller.join(this.val.value);return false;">
+							<label for="nick_val">Change Room</label>
 							<div class="inputMsg input-group">
-								<input name="val" type="number" required placeholder="num.." class="form-control" min="2" max="100"/>
+								<!-- <input name="val" type="number" required placeholder="num.." class="form-control" min="2" max="100"/> -->
+								<select id="roomManager_rid_val" class="form-control" name="val">
+									<option v-for="r in roomManager.rooms" :value="r.rid" >[{{ r.userCount }}/{{ r.maxUserCount }}] {{ r.subject }}</option>
+								</select>
 								<div class="input-group-append ">
 									<button class="btn btn-warning" type="submit">Change</button>
 								</div>

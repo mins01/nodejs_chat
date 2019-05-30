@@ -19,6 +19,7 @@ class UserManager {
 	}
 
 	remove(user){
+		if(!user){ return false; }
 		console.log(this+".onremove("+user+")");
 		if(!this.users.has(user.uid)){
 			return false;
