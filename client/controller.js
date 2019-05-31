@@ -16,7 +16,8 @@ let controller = (function(){
 				// 	$(".msgs .scroll-y").scrollTop($(".msgs .scroll-y").height()+9999999)
 				// }
 			})
-			this.maxMsgCount = 100;
+			var thisC = this;
+			this.maxMsgCount = 1000;
 			this.template_msg = document.getElementById('template_msg');
 			this.msgsBox = document.getElementById('msgsBox');
 			$("#input_msg").on("keyup",function(event){
@@ -28,8 +29,19 @@ let controller = (function(){
 			})
 
 			this.msgsBox.addEventListener("DOMNodeInserted", function () {
-				$(".msgs .scroll-y").scrollTop($("#msgsBox").height())
+				var $t = $(".msgs .scroll-y");
+				if($t.prop("scrollHeight") - $t.height() - $t.scrollTop()<50){
+					$t.scrollTop($("#msgsBox").height())	
+				}
 			}, false);
+			
+			document.title = "CHATTING";
+			document.addEventListener('visibilitychange',function(){
+				if(document.visibilityState=='visible'){
+					thisC.noReadMsgCount = 0;
+					document.title = "CHATTING";
+				}
+			},false)
 			
 			this.client = client;
 			this.client.onopen = this.onopen.bind(this);
@@ -162,12 +174,17 @@ let controller = (function(){
 		},
 		
 		
-		
+		"noReadMsgCount":0,
 		"pushMsg":function(json){
 			if($(this.msgsBox).find('li').length > this.maxMsgCount){
 				$(this.msgsBox).find('li:first').remove();
 			}
 			this.appendMsg(json)
+			console.log(document.hidden);
+			if(document.hidden){
+				this.noReadMsgCount++;
+				document.title="Unread : "+this.noReadMsgCount;
+			}
 			
 		},
 		"appendMsg":function(json){

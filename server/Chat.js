@@ -13,7 +13,7 @@ class Chat{
 		this.rm = new RoomManager();
 		this.um = new UserManager();
 		// 기본 방 생성
-		this.rm.create("ROBBY - pw:1234","robby");
+		this.rm.create("LOBBY - pw:1234","lobby");
 	}
 
 	toString(){
@@ -26,7 +26,7 @@ class Chat{
 		var uid = Math.floor(Math.random()*34).toString(34)+conn.socket.remotePort.toString(34)+(new Date).getTime().toString(34)
 		var user = new User(conn,uid,uid,uid);
 		conn.user = user;
-		// this.rm.join(user,'robby');
+		// this.rm.join(user,'lobby');
 		user.sync();
 		// 이벤트 등록
 		conn.on("text", function (str) {
@@ -62,7 +62,7 @@ class Chat{
 		}
 		
 		user.sync();
-		this.rm.join(user,'robby');
+		this.rm.join(user,'lobby');
 	}
 	removeConn(conn){
 		if(conn.user){

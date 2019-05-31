@@ -88,10 +88,17 @@
 #chat-box div.content aside.users .list-group-item{
 
 }
-
+#chat-box div.content aside.users .list-group-item::before{
+	margin-right: 0.3em;
+}
 #chat-box div.content aside.users .list-group-item[data-is-admin="1"]::before{
 	content: "👑";
-	margin-right: 0.5em;
+}
+#chat-box div.content aside.users .list-group-item[data-is-mine="1"]::before{
+	content: "🚩"
+}
+#chat-box div.content aside.users .list-group-item[data-is-admin="1"][data-is-mine="1"]::before{
+	content: "👑🚩"
 }
 
 .text-overflow-ellipsis{
