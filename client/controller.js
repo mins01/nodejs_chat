@@ -16,6 +16,13 @@ let controller = (function(){
 					// $(document.body).attr("data-is-admin",$("#chatApp").attr("data-is-admin"));
 				}
 			})
+			$("#input_msg").on("keyup",function(event){
+				if(event.key=="ArrowUp"){
+					if(this.preValue!=null){
+						this.value = this.preValue;
+					}
+				}
+			})
 			this.client = client;
 			this.client.onopen = this.onopen.bind(this);
 			this.client.onclose = this.onclose.bind(this);
@@ -140,7 +147,10 @@ let controller = (function(){
 				return;
 			}
 			this.sendFromForm(f);
-			f.val.value = "";
+			f.val.preValue = f.val.value;
+			setTimeout(function(){
+				f.val.value = "";
+			},0)
 		},
 		"openModalSetting":function(){
 			$("#nick_val").val(this.v.user.nick)
