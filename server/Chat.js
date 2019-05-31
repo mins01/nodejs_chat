@@ -117,7 +117,9 @@ class Chat{
 			this.rm.reqHandler(user,mo);
 			break;
 			case "room": //room 메세지
-			room.reqHandler(user,mo);
+				var room = this.rm.room(mo.rid);
+				if(!room){return;}
+				room.reqHandler(user,mo);
 			break;
 			default:
 			var mo2 = new MsgObj("msg","system","not support : "+mo);
