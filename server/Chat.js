@@ -13,7 +13,9 @@ class Chat{
 		this.rm = new RoomManager();
 		this.um = new UserManager();
 		// 기본 방 생성
-		this.rm.create("LOBBY - pw:1234","lobby");
+		var room = this.rm.create("LOBBY - http://mins01.com ","lobby");
+		room.setMaxUserCount(100);
+		room.immutable = true;
 	}
 
 	toString(){
@@ -60,7 +62,7 @@ class Chat{
 		if(mo.nick != null && mo.nick.length>0) {
 			this.um.nick(user,mo.nick)
 		}
-		
+
 		user.sync();
 		this.rm.join(user,'lobby');
 	}

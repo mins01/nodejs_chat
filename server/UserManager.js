@@ -43,7 +43,7 @@ class UserManager {
 	}
 	setNick(user,nick){
 		for(let [k,v] of this.users){
-			if(v.uuid==user.uuid){
+			if(v.uuid==user.uuid && v.nick != nick){
 				var mo = new MsgObj("msg","notice","'"+user.nick+"' changed its name to '"+nick+"'.");
 				v.nick = nick;
 				v.sync();

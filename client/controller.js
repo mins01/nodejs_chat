@@ -2,7 +2,7 @@
 let controller = (function(){
 	let controller = {
 		"init":function(client){
-			
+
 			this.v = new Vue({
 				el: '#chatApp',
 				data: {
@@ -31,10 +31,10 @@ let controller = (function(){
 			this.msgsBox.addEventListener("DOMNodeInserted", function () {
 				var $t = $(".msgs .scroll-y");
 				if($t.prop("scrollHeight") - $t.height() - $t.scrollTop()<(50*3)){
-					$t.scrollTop($("#msgsBox").height())	
+					$t.scrollTop($("#msgsBox").height())
 				}
 			}, false);
-			
+
 			document.title = "CHATTING";
 			document.addEventListener('visibilitychange',function(){
 				if(document.visibilityState=='visible'){
@@ -42,7 +42,7 @@ let controller = (function(){
 					document.title = "CHATTING";
 				}
 			},false)
-			
+
 			this.client = client;
 			this.client.onopen = this.onopen.bind(this);
 			this.client.onclose = this.onclose.bind(this);
@@ -51,12 +51,12 @@ let controller = (function(){
 			this.client.connect();
 			this.reconnect.retry = 5;
 			this.reconnect.tm = null;
-			
+
 			if(this.getLS("uuid")==null){
 				this.setLS("uuid",uuidgen());
 			}
-		
-			
+
+
 		},
 		"toString":function(){
 			return "controller";
@@ -68,16 +68,16 @@ let controller = (function(){
 			this.reconnect.tm = setInterval(function(){
 				if(thisC.reconnect.retry <= 0){
 					thisC.msgHandler({"app":"msg","fun":"system","val":"Retry connect : Fail ","nick":"#CLIENT#"});
-					if(thisC.reconnect.tm){clearInterval(thisC.reconnect.tm);}		
+					if(thisC.reconnect.tm){clearInterval(thisC.reconnect.tm);}
 					return;
 				}
 				thisC.msgHandler({"app":"msg","fun":"system","val":"Retry connect : remain "+thisC.reconnect.retry,"nick":"#CLIENT#"});
 				thisC.client.connect();
-				
+
 				thisC.reconnect.retry--;
-				
+
 			},5000)
-			
+
 		},
 		"onopen":function(event){
 			console.log(this+".onopen()",event);
@@ -88,10 +88,10 @@ let controller = (function(){
 			var uuid = this.getLS('uuid');
 			var mo = new MsgObj({"app":"first","fun":"","val":""});
 			if(nick){
-				mo.nick = nick;			
+				mo.nick = nick;
 			}
 			if(uuid){
-				mo.uuid = uuid;			
+				mo.uuid = uuid;
 			}
 			this.send(mo);
 			//-- 재접속 관련
@@ -132,21 +132,31 @@ let controller = (function(){
 				default:
 			}
 		},
+		"syncRoomManager":function(){
+			this.send((new MsgObj({"app":"roomManager","fun":"sync","val":""})));
+		},
 		"roomManagerHandler":function(json){
 			switch (json.fun) {
 				case "create":
-				this.msgHandler({"app":"msg","fun":"notice","val":"Created room","nick":"#CLIENT#"});
+				this.msgHandler({"app":"msg","fun":"system","val":"Room("+json.val+") was created."});
 				this.join(json.val)
+
 				break;
 				case "sync":
 				this.v.roomManager = json.val;
+				// $("#roomManager_rid_val").val(this.v.room.rid);
 				break;
 				default:
-					
 			}
 		},
 		"roomHandler":function(json){
 			this.v.room = json.val
+			// $("#roomManager_rid_val").val(this.v.room.rid);
+			if(	$('#modalRoomManager').hasClass("show")){
+				$("#roomManager_create_val").val("");
+				// $("#roomManager_rid_val").val(this.v.room.rid);
+				this.syncRoomManager();
+			}
 		},
 		"userHandler":function(json){
 			this.v.user = json.val;
@@ -172,8 +182,8 @@ let controller = (function(){
 		"whisperHandler":function(json){
 			console.error("X");
 		},
-		
-		
+
+
 		"noReadMsgCount":0,
 		"pushMsg":function(json){
 			if($(this.msgsBox).find('li').length > this.maxMsgCount){
@@ -182,9 +192,9 @@ let controller = (function(){
 			this.appendMsg(json)
 			if(document.hidden){
 				this.noReadMsgCount++;
-				document.title="Unread : "+this.noReadMsgCount;
+				document.title=(this.noReadMsgCount%2?"✉️":"📨")+"Unread : "+this.noReadMsgCount;
 			}
-			
+
 		},
 		"appendMsg":function(json){
 			var t = this.template_msg.content.cloneNode(true);
@@ -200,9 +210,10 @@ let controller = (function(){
 		},
 		"join":function(rid){
 			if(this.v.room.rid==rid){return false;}
-			this.send((new MsgObj({"app":"roomManager","fun":"leave","val":this.v.room.rid})));
-			this.send((new MsgObj({"app":"roomManager","fun":"join","val":rid})));
-		},	
+			this.send((new MsgObj({"app":"roomManager","fun":"leaveAndJoin","val":this.v.room.rid,"rid":rid})));
+			// this.send((new MsgObj({"app":"roomManager","fun":"leave","val":this.v.room.rid})));
+			// this.send((new MsgObj({"app":"roomManager","fun":"join","val":rid})));
+		},
 		"sendFromForm":function(f){
 
 			var mo = new MsgObj();
@@ -248,7 +259,8 @@ let controller = (function(){
 		},
 		"openModalRoomManager":function(){
 			this.send((new MsgObj({"app":"roomManager","fun":"sync","val":""})));
-			$("#roomManager_rid_val").val(this.v.room.rid);
+			// $("#roomManager_rid_val").val(this.v.room.rid);
+			$("#roomManager_create_val").val("");
 			$('#modalRoomManager').modal('show')
 		},
 		"hideModalRoomManager":function(){

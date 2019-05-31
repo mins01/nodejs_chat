@@ -10,6 +10,7 @@ class Room{
 		this.adminUids = new Set();
 		this.subject = subject;
 		this.adminPassword = "1234";
+		this.immutable = false;
 		this.opt = Object.assign({"maxUserCount":10},opt);
 		// this.um = new UserManager();
 		console.log("constructor "+this+"()");
@@ -55,6 +56,7 @@ class Room{
 		return this.maxUserCount;
 	}
 	setSubject(subject){
+		if(subject.length>100){return false;}
 		this.subject = subject
 		return true;
 	}
@@ -93,10 +95,10 @@ class Room{
 			return false;
 		}else{
 			this.add(user);
-			
+
 			var mo = new MsgObj("msg","notice",user.nick+" entered the room("+this.subject+").");
 			this.broadcast(mo)
-			
+
 			if(this.users.size==1){
 				this.grantAdmin(user)
 			}
@@ -148,7 +150,7 @@ class Room{
 			v.send(mo);
 		})
 	}
-	
+
 	reqHandler(user,mo){
 		var room = this;
 		var r;
@@ -172,23 +174,30 @@ class Room{
 			case "setSubject":
 			if(!room.isAdmin(user)){
 				console.warn("is not admin");
+			}else if(this.immutable){
+				user.send(new MsgObj("msg","system","Room is immutable."))
 			}else if(room.setSubject(mo.val)){
 				var mo2 = new MsgObj("msg","notice","The subject has been changed to '"+mo.val+"'.");
 				room.broadcast(mo2);
 				room.sync();
+			}else{
+				user.send(new MsgObj("msg","system","The subject has not been changed to "+mo.val+"."))
 			}
 			break;
 			case "setMaxUserCount":
 			if(!room.isAdmin(user)){
 				console.warn("is not admin");
-			}else if(r = room.setMaxUserCount(mo.val)){
+			}else if(this.immutable){
+				user.send(new MsgObj("msg","system","Room is immutable."))
+			}else if(room.setMaxUserCount(mo.val)){
 				var mo2 = new MsgObj("msg","notice","The maximum user count has been changed to "+mo.val+".");
-
 				room.broadcast(mo2);
 				room.sync();
+			}else{
+				user.send(new MsgObj("msg","system","The maximum user count has not been changed to "+mo.val+"."))
 			}
 			break;
-			
+
 			case "join":
 			if(room.join(user)){
 			}

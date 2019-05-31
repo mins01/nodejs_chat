@@ -8,7 +8,7 @@ class RoomManager {
 		console.log("constructor"+this+"()");
 		this.rooms = new ExtendedMap() ;
 	}
-	
+
 	toString(){
 		return this.constructor.name;
 	}
@@ -26,7 +26,7 @@ class RoomManager {
 			rooms[k] = t;
 		}
 		return rooms;
-		
+
 	}
 	sync(user){
 		var mo = new MsgObj();
@@ -35,14 +35,14 @@ class RoomManager {
 		mo.val = this.toJSON();
 		user.send(mo)
 	}
-	
+
 	room(rid){
 		if(!this.rooms.has(rid)){
 			return null; //해당 방이 없음
 		}
 		return this.rooms.get(rid);
 	}
-	
+
 	create(subject,rid){
 		if(rid==null){
 			var rid = Math.floor(Math.random()*34).toString(34)+(subject.length).toString(34)+(new Date).getTime().toString(34)
@@ -62,7 +62,21 @@ class RoomManager {
 		this.rooms.set(rid,room);
 		return room;
 	}
-	
+	remove(room){
+		if(room.immutable){
+			// user.broadcast(new MsgObj("msg","system","Room is immutable."))
+			var mo2 = new MsgObj("msg","system","Room is immutable.");
+			return mo2;
+		}
+		room.broadcast(new MsgObj("msg","system","Will close the room."))
+		for( var [k,v] of room.users){
+			room.leave(v);
+			this.join(v,"lobby");
+		}
+		this.rooms.delete(room.rid);
+		room = null;
+		return true;
+	}
 	join(user,rid){
 		console.log(this+".join("+user+","+rid+")" );
 		var room = this.room(rid);
@@ -70,7 +84,7 @@ class RoomManager {
 			console.error("Not exists room.", rid);
 			return;
 		}
-		
+
 		room.join(user);
 	}
 	leave(user,rid){
@@ -78,10 +92,19 @@ class RoomManager {
 		var room = this.room(rid);
 		if(!room){
 			console.error("Not exists room.", rid);
-			return;
+			return true;
 		}
-		
 		room.leave(user);
+		if(room.users.size==0){
+			this.remove(room);
+		}
+		return true;
+	}
+	leaveAndJoin(user,fromRid,toRid){
+
+		if(this.rooms.has(toRid) && this.leave(user,fromRid)){
+			this.join(user,toRid);
+		}
 	}
 	reqHandler(user,mo){
 		var r;
@@ -93,6 +116,10 @@ class RoomManager {
 					this.sync(user)
 				}
 			break;
+			case "leaveAndJoin":
+				if(this.leaveAndJoin(user,mo.val,mo.rid)){
+				}
+			break;
 			case "join":
 				if(this.join(user,mo.val)){
 				}
@@ -100,6 +127,21 @@ class RoomManager {
 			case "leave":
 				if(this.leave(user,mo.val)){
 				}
+			break;
+			case "remove":
+			if(!this.rooms.has(mo.val)){
+				var mo2 = new MsgObj("msg","system","Not exists room("+mo.val+")");
+				user.send(mo2)
+			}else{
+				var room = this.rooms.get(mo.val);
+				if(!room.isAdmin(user)){
+ 					console.warn("is not admin");
+				}else if(r = this.remove(room)){
+					if(r!==true){ //실패임
+						user.send(r);
+					}
+				}
+			}
 			break;
 			case "sync":
 				if(this.sync(user)){

@@ -25,7 +25,7 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
 	<!-- vue.js -->
 	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-	
+
 
 
 	<!-- meta og -->
@@ -204,9 +204,19 @@
 							<label for="nick_val">Revoke admin</label>
 							<input name="app" type="hidden" value="room" />
 							<input name="fun" type="hidden" value="revokeAdmin" />
-							<input name="val" type="hidden" required placeholder="password" class="form-control" maxlength="20"/>
+							<input name="val" type="hidden" required  value="" class="form-control" maxlength="20"/>
 							<div class="text-center">
 								<button class="btn btn-warning" type="submit">Revoke</button>
+							</div>
+						</form>
+						<hr>
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalRoom(this);return false;">
+							<label for="nick_val">Close room</label>
+							<input name="app" type="hidden" value="roomManager" />
+							<input name="fun" type="hidden" value="remove" />
+							<input name="val" type="" required v-model="room.rid" class="form-control"/>
+							<div class="text-center">
+								<button class="btn btn-warning" type="submit">Close</button>
 							</div>
 						</form>
 						<hr>
@@ -240,7 +250,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- modalRoom -->
 		<div class="modal fade" id="modalRoomManager" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -257,7 +267,7 @@
 							<input name="app" type="hidden" value="roomManager" />
 							<input name="fun" type="hidden" value="create" />
 							<div class="inputMsg input-group">
-								<input name="val" type="text" required placeholder="Subject" class="form-control" maxlength="100"/>
+								<input name="val" id="roomManager_create_val" type="text" required placeholder="Subject" class="form-control" maxlength="100"/>
 								<div class="input-group-append ">
 									<button class="btn btn-warning" type="submit">Create</button>
 								</div>
@@ -267,9 +277,11 @@
 						<form  class="form-group" action="#" onsubmit="controller.join(this.val.value);return false;">
 							<label for="nick_val">Change Room</label>
 							<div class="inputMsg input-group">
-								<!-- <input name="val" type="number" required placeholder="num.." class="form-control" min="2" max="100"/> -->
+								<div class="input-group-prepend ">
+									<button class="btn btn-success" type="button" onclick="controller.syncRoomManager()">Reload</button>
+								</div>
 								<select id="roomManager_rid_val" class="form-control" name="val">
-									<option v-for="r in roomManager.rooms" :value="r.rid" >[{{ r.userCount }}/{{ r.maxUserCount }}] {{ r.subject }}</option>
+									<option v-for="r in roomManager.rooms" :value="r.rid" :selected="r.rid==room.rid" >[{{ r.userCount }}/{{ r.maxUserCount }}] {{ r.subject }}</option>
 								</select>
 								<div class="input-group-append ">
 									<button class="btn btn-warning" type="submit">Change</button>
