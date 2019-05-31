@@ -34,21 +34,28 @@ class UserManager {
 
 	nick(user,nick){
 		console.log(this+".nick("+user+","+nick+")");
-		if(!this.hasNick(nick)){
-			var mo = new MsgObj("msg","notice","'"+user.nick+"' changed its name to '"+nick+"'.");
-			user.nick = nick;
-			user.sync();
-			user.broadcast(mo);
-			user.syncRooms();
-
+		if(!this.hasNick(nick,user)){
+			this.setNick(user,nick)
 		}else{
 			var mo = new MsgObj("msg","system","'"+nick+"' is already a nickname in use.");
 			user.send(mo);
 		}
 	}
-	hasNick(nick){
+	setNick(user,nick){
 		for(let [k,v] of this.users){
-				if(v.nick == nick){return true;}
+			if(v.uuid==user.uuid){
+				var mo = new MsgObj("msg","notice","'"+user.nick+"' changed its name to '"+nick+"'.");
+				v.nick = nick;
+				v.sync();
+				v.broadcast(mo);
+				v.syncRooms();
+			}
+		}
+	}
+	hasNick(nick,user){
+		for(let [k,v] of this.users){
+			if(v.uuid==user.uuid) continue;
+			if(v.nick == nick){return true;}
 		}
 		return false;
 	}

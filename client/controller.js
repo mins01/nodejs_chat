@@ -1,21 +1,24 @@
+"use strict";
 let controller = (function(){
 	let controller = {
 		"init":function(client){
+			
 			this.v = new Vue({
 				el: '#chatApp',
 				data: {
-					"msgs":[],
+					// "msgs":[],
 					"room":{"subject":"-","users":{}},
 					"roomManager":{"rooms":{}},
 					"user":{"nick":"##","uid":""},
 				},
-				updated:function(){
-					var thisC = this;
-					$(".msgs .scroll-y").scrollTop($(".msgs .scroll-y").height()+9999999)
-
-					// $(document.body).attr("data-is-admin",$("#chatApp").attr("data-is-admin"));
-				}
+				// updated:function(){
+				// 	var thisC = this;
+				// 	$(".msgs .scroll-y").scrollTop($(".msgs .scroll-y").height()+9999999)
+				// }
 			})
+			this.maxMsgCount = 100;
+			this.template_msg = document.getElementById('template_msg');
+			this.msgsBox = document.getElementById('msgsBox');
 			$("#input_msg").on("keyup",function(event){
 				if(event.key=="ArrowUp"){
 					if(this.preValue!=null){
@@ -23,6 +26,11 @@ let controller = (function(){
 					}
 				}
 			})
+
+			this.msgsBox.addEventListener("DOMNodeInserted", function () {
+				$(".msgs .scroll-y").scrollTop($("#msgsBox").height())
+			}, false);
+			
 			this.client = client;
 			this.client.onopen = this.onopen.bind(this);
 			this.client.onclose = this.onclose.bind(this);
@@ -31,6 +39,12 @@ let controller = (function(){
 			this.client.connect();
 			this.reconnect.retry = 5;
 			this.reconnect.tm = null;
+			
+			if(this.getLS("uuid")==null){
+				this.setLS("uuid",uuidgen());
+			}
+		
+			
 		},
 		"toString":function(){
 			return "controller";
@@ -56,13 +70,18 @@ let controller = (function(){
 		"onopen":function(event){
 			console.log(this+".onopen()",event);
 			var json = {"app":"msg","fun":"notice","val":"Connection success","nick":"#CLIENT#"}
-			this.v.msgs.push(json)
-			
+			this.pushMsg(json)
 			//-- 닉네임 자동 설정
 			var nick = this.getLS('nick');
+			var uuid = this.getLS('uuid');
+			var mo = new MsgObj({"app":"first","fun":"","val":""});
 			if(nick){
-				this.send((new MsgObj({"app":"nick","fun":"","val":nick})));
+				mo.nick = nick;			
 			}
+			if(uuid){
+				mo.uuid = uuid;			
+			}
+			this.send(mo);
 			//-- 재접속 관련
 			this.reconnect.retry = 5;
 			if(this.reconnect.tm){clearInterval(this.reconnect.tm);}
@@ -70,13 +89,13 @@ let controller = (function(){
 		"onclose":function(event){
 			console.log(this+".onclose()",event);
 			var json = {"app":"msg","fun":"notice","val":"Connection closed","nick":"#CLIENT#"}
-			this.v.msgs.push(json)
+			this.pushMsg(json)
 			this.reconnect();
 		},
 		"onerror":function(event){
 			console.log(this+".onerror()",event);
 			var json = {"app":"msg","fun":"notice","val":"Error","nick":"#CLIENT#"}
-			this.v.msgs.push(json)
+			this.pushMsg(json)
 		},
 		"onmessage" :function(event){
 			try {
@@ -125,14 +144,14 @@ let controller = (function(){
 			if(!json.nick){
 				json.nick = json.fun;
 			}
-			this.pushMsgs(json);
+			this.pushMsg(json);
 		},
 		"talkHandler":function(json){
 			console.error("X");
 		},
 		"errorHandler":function(json){
 			json.nick = json.app;
-			this.pushMsgs(json);
+			this.pushMsg(json);
 			this.client.close();
 		},
 		"noticeHandler":function(json){
@@ -144,11 +163,19 @@ let controller = (function(){
 		
 		
 		
-		"pushMsgs":function(json){
-			if(this.v.msgs.length>100){
-				this.v.msgs.shift()
+		"pushMsg":function(json){
+			if($(this.msgsBox).find('li').length > this.maxMsgCount){
+				$(this.msgsBox).find('li:first').remove();
 			}
-			this.v.msgs.push(json)
+			this.appendMsg(json)
+			
+		},
+		"appendMsg":function(json){
+			var t = this.template_msg.content.cloneNode(true);
+			$(t).find('li.msg').attr('data-app',json.app).attr('data-fun',json.fun).attr('data-val',json.val);
+			$(t).find('.nick').text(json.nick);
+			$(t).find('.val').text(json.val).autolink();
+			$(this.msgsBox).append(t);
 		},
 		"send":function(mo){
 			if(mo.rid==null) mo.rid = this.v.room.rid;

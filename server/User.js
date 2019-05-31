@@ -1,10 +1,11 @@
 const MsgObj = require("./MsgObj.js");
 
 class User {
-	constructor(conn,uid,nick){
+	constructor(conn,uid,nick,uuid){
 		this.conn = conn;
 		this.uid = uid;
 		this.nick = nick;
+		this.uuid = uuid;
 		// this.isRoot = false;
 		// this.isAdmin = false;
 		this.rooms = new Map();
@@ -14,11 +15,12 @@ class User {
 	}
 
 	toString(){
-		return this.constructor.name+"#"+this.uid;
+		return this.constructor.name+"#"+this.uid+"#"+this.uuid;
 	}
 	toJSON(){
 		return {
 			"uid":this.uid,
+			// "uuid":this.uuid, //밖에 보이면 안됨.
 			"nick":this.nick,
 			"isRoot":this.isRoot,
 			"isAdmin":this.isAdmin,

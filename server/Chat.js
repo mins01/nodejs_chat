@@ -24,10 +24,9 @@ class Chat{
 		var that = this;
 		console.log(this+".addConn() "+conn.socket.remoteAddress+":"+conn.socket.remotePort);
 		var uid = Math.floor(Math.random()*34).toString(34)+conn.socket.remotePort.toString(34)+(new Date).getTime().toString(34)
-		var user = new User(conn,uid,uid);
+		var user = new User(conn,uid,uid,uid);
 		conn.user = user;
-		this.um.add(user);
-		this.rm.join(user,'robby');
+		// this.rm.join(user,'robby');
 		user.sync();
 		// 이벤트 등록
 		conn.on("text", function (str) {
@@ -51,6 +50,19 @@ class Chat{
 		// 	that.onbinary(this,inStream);
 		// });
 
+	}
+	first(user,mo){
+		if(mo.uuid != null && mo.uuid.length>0) {
+			user.uuid = mo.uuid;
+		}
+		this.um.add(user);
+		// this.um.uid = mo.uid;
+		if(mo.nick != null && mo.nick.length>0) {
+			this.um.nick(user,mo.nick)
+		}
+		
+		user.sync();
+		this.rm.join(user,'robby');
 	}
 	removeConn(conn){
 		if(conn.user){
@@ -106,13 +118,18 @@ class Chat{
 		mo.uid = user.uid;
 
 		switch(mo.app){
-			case "msg": //일반 메세지
-			case "talk": //일반 메세지
-			this.msgHandler(user,mo);
+			case "first": //최초 동작
+			this.first(user,mo);
 			break;
 			case "nick": //닉네임변경
 			this.um.nick(user,mo.val);
 			break;
+
+			case "msg": //일반 메세지
+			case "talk": //일반 메세지
+			this.msgHandler(user,mo);
+			break;
+
 			case "roomManager": //room 관리자 메세지
 			this.rm.reqHandler(user,mo);
 			break;

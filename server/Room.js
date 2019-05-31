@@ -93,12 +93,13 @@ class Room{
 			return false;
 		}else{
 			this.add(user);
-			if(this.users.size==1){
-				this.grantAdmin(user)
-			}
 			
 			var mo = new MsgObj("msg","notice",user.nick+" entered the room("+this.subject+").");
 			this.broadcast(mo)
+			
+			if(this.users.size==1){
+				this.grantAdmin(user)
+			}
 			this.sync();
 		}
 

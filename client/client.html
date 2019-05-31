@@ -42,6 +42,7 @@
 
 	<script src="vue_component.js"></script>
 	<script src="jquery.autolink.js"></script>
+	<script src="helper.js"></script>
 
 	<script src="Client.js"></script>
 	<script src="MsgObj.js"></script>
@@ -80,6 +81,12 @@
 
 
 	</div>
+	<template id="template_msg" >
+		<li  class="list-group-item msg" data-app="msg.app" data-fun="msg.fun" data-val="msg.val">
+			<span class="nick d-inline-block"></span>
+			<span class="val d-inline-block"></span>
+		</li>
+	</template>
 	<div  id="chatApp"  :data-is-admin="(room.users[user.uid]!=null &amp;&amp; room.users[user.uid].isAdmin)?1:0">
 		<div class="chat-box" id="chat-box">
 			<header class="room">
@@ -98,10 +105,10 @@
 				<article class="msgs">
 					<div class="scroll-y">
 						<ul class="list-group" id="msgsBox">
-							<li class="list-group-item msg"  v-for="msg in msgs" :data-app="msg.app" :data-fun="msg.fun">
+							<!-- <li class="list-group-item msg"  v-for="msg in msgs" :data-app="msg.app" :data-fun="msg.fun" :data-val="msg.val">
 								<span class="nick d-inline-block">{{ msg.nick }}</span>
-								<span class="val d-inline-block"><autolink :content="msg.val"></autolink></span>
-							</li>
+								<span class="val d-inline-block" data-autolink="0"></span>
+							</li> -->
 						</ul>
 					</div>
 
