@@ -117,7 +117,7 @@
 					<div class="scroll-y">
 						<ul class="list-group" id="usersBox">
 							<li class="list-group-item active text-center" ><b>USERS ({{ room.userCount }}/{{ room.maxUserCount }})</b></li>
-							<li class="list-group-item text-overflow-ellipsis" v-for="u in room.users" :title="u.nick" :data-is-admin="u.isAdmin?1:0" :data-is-mine="u.uid==user.uid?1:0">{{ user.nick }}</li>
+							<li class="list-group-item text-overflow-ellipsis" v-for="u in room.users" :title="u.nick" :data-is-admin="u.isAdmin?1:0" :data-is-mine="u.uid==user.uid?1:0">{{ u.nick }}</li>
 						</ul>
 					</div>
 
