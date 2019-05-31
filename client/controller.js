@@ -29,9 +29,29 @@ let controller = (function(){
 			this.client.onerror = this.onerror.bind(this);
 			this.client.onmessage = this.onmessage.bind(this);
 			this.client.connect();
+			this.reconnect.retry = 5;
+			this.reconnect.tm = null;
 		},
 		"toString":function(){
 			return "controller";
+		},
+		"reconnect":function(){
+			var thisC = this;
+			if(this.reconnect.tm!=null){return;}
+			this.msgHandler({"app":"msg","fun":"system","val":"Retry connect : Start ","nick":"#CLIENT#"});
+			this.reconnect.tm = setInterval(function(){
+				if(thisC.reconnect.retry <= 0){
+					thisC.msgHandler({"app":"msg","fun":"system","val":"Retry connect : Fail ","nick":"#CLIENT#"});
+					if(thisC.reconnect.tm){clearInterval(thisC.reconnect.tm);}		
+					return;
+				}
+				thisC.msgHandler({"app":"msg","fun":"system","val":"Retry connect : remain "+thisC.reconnect.retry,"nick":"#CLIENT#"});
+				thisC.client.connect();
+				
+				thisC.reconnect.retry--;
+				
+			},5000)
+			
 		},
 		"onopen":function(event){
 			console.log(this+".onopen()",event);
@@ -43,11 +63,15 @@ let controller = (function(){
 			if(nick){
 				this.send((new MsgObj({"app":"nick","fun":"","val":nick})));
 			}
+			//-- 재접속 관련
+			this.reconnect.retry = 5;
+			if(this.reconnect.tm){clearInterval(this.reconnect.tm);}
 		},
 		"onclose":function(event){
 			console.log(this+".onclose()",event);
 			var json = {"app":"msg","fun":"notice","val":"Connection closed","nick":"#CLIENT#"}
 			this.v.msgs.push(json)
+			this.reconnect();
 		},
 		"onerror":function(event){
 			console.log(this+".onerror()",event);
