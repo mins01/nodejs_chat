@@ -25,6 +25,8 @@
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
 	<!-- vue.js -->
 	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	
+
 
 	<!-- meta og -->
 
@@ -37,6 +39,9 @@
 	<meta property="og:type" content="website">
 
 	<!-- //meta og -->
+
+	<script src="vue_component.js"></script>
+	<script src="jquery.autolink.js"></script>
 
 	<script src="Client.js"></script>
 	<script src="MsgObj.js"></script>
@@ -95,7 +100,7 @@
 						<ul class="list-group" id="msgsBox">
 							<li class="list-group-item msg"  v-for="msg in msgs" :data-app="msg.app" :data-fun="msg.fun">
 								<span class="nick d-inline-block">{{ msg.nick }}</span>
-								<span class="val d-inline-block">{{ msg.val }}</span>
+								<span class="val d-inline-block"><autolink :content="msg.val"></autolink></span>
 							</li>
 						</ul>
 					</div>
