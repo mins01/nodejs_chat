@@ -214,20 +214,20 @@
 							<label for="nick_val">Close room</label>
 							<input name="app" type="hidden" value="roomManager" />
 							<input name="fun" type="hidden" value="remove" />
-							<input name="val" type="" required v-model="room.rid" class="form-control"/>
+							<input name="val" type="hidden" required v-model="room.rid" class="form-control"/>
 							<div class="text-center">
-								<button class="btn btn-warning" type="submit">Close</button>
+								<button class="btn btn-warning" type="submit" :disabled="room.immutable">Close</button>
 							</div>
 						</form>
 						<hr>
-						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;" >
 							<label for="nick_val">Change subject</label>
 							<input name="app" type="hidden" value="room" />
 							<input name="fun" type="hidden" value="setSubject" />
 							<div class="inputMsg input-group">
-								<input id="room_setSubject_val" name="val" type="text" required placeholder="subject" class="form-control" maxlength="100"/>
+								<input id="room_setSubject_val" name="val" type="text" required placeholder="subject" class="form-control" maxlength="100" :disabled="room.immutable"/>
 								<div class="input-group-append ">
-									<button class="btn btn-warning" type="submit">Change</button>
+									<button class="btn btn-warning" type="submit" :disabled="room.immutable">Change</button>
 								</div>
 							</div>
 						</form>
@@ -237,9 +237,9 @@
 							<input name="app" type="hidden" value="room" />
 							<input name="fun" type="hidden" value="setMaxUserCount" />
 							<div class="inputMsg input-group">
-								<input id="room_setMaxUserCount_val" name="val" type="number" required placeholder="num.." class="form-control" min="2" max="100"/>
+								<input id="room_setMaxUserCount_val" name="val" type="number" required placeholder="num.." class="form-control" min="2" max="100" :disabled="room.immutable"/>
 								<div class="input-group-append ">
-									<button class="btn btn-warning" type="submit">Change</button>
+									<button class="btn btn-warning" type="submit" :disabled="room.immutable">Change</button>
 								</div>
 							</div>
 						</form>

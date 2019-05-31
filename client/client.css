@@ -26,9 +26,6 @@
 	flex:1 0 0;
 	font-size: 1.5em;
 	font-weight: bold;
-	/* display: flex;
-	justify-content: center;
-	align-items: center; */
 }
 #chat-box header.room .openModalSetting ,
 #chat-box header.room .openModalRoom,
@@ -95,10 +92,10 @@
 	content: "👑";
 }
 #chat-box div.content aside.users .list-group-item[data-is-mine="1"]::before{
-	content: "🚩"
+	content: "💻"
 }
 #chat-box div.content aside.users .list-group-item[data-is-admin="1"][data-is-mine="1"]::before{
-	content: "👑🚩"
+	content: "👑💻"
 }
 
 .text-overflow-ellipsis{

@@ -7,7 +7,7 @@ let controller = (function(){
 				el: '#chatApp',
 				data: {
 					// "msgs":[],
-					"room":{"subject":"-","users":{}},
+					"room":{"subject":"-","users":{},"immutable":false},
 					"roomManager":{"rooms":{}},
 					"user":{"nick":"##","uid":""},
 				},

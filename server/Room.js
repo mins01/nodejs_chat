@@ -26,6 +26,7 @@ class Room{
 			"userCount":this.userCount,
 			"maxUserCount":this.maxUserCount,
 			"subject":this.subject,
+			"immutable":this.immutable,
 		}
 	}
 	getUsersWithisAdmin(){
