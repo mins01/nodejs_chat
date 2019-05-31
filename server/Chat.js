@@ -101,15 +101,14 @@ class Chat{
 		if(mo.val == undefined){ mo.val = "";}
 		if(mo.rid == undefined){ mo.rid = "";}
 		if(mo.uid == undefined){ mo.uid = user.uid;} //사용자 아이디 강제 추가
-		var room = this.rm.room(mo.rid);
-		if(!room){return;}
+
 
 		mo.uid = user.uid;
 
 		switch(mo.app){
 			case "msg": //일반 메세지
 			case "talk": //일반 메세지
-			this.msgHandler(user,mo,room);
+			this.msgHandler(user,mo);
 			break;
 			case "nick": //닉네임변경
 			this.um.nick(user,mo.val);
@@ -130,7 +129,9 @@ class Chat{
 		return true;
 	}
 
-	msgHandler(user,mo,room){
+	msgHandler(user,mo){
+		var room = this.rm.room(mo.rid);
+		if(!room){return;}
 		if(mo.val.length>1024){
 			var mo2 = new MsgObj("msg","system","Too long content");
 			user.send(mo2);

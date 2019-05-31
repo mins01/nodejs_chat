@@ -37,6 +37,12 @@ let controller = (function(){
 			console.log(this+".onopen()",event);
 			var json = {"app":"msg","fun":"notice","val":"Connection success","nick":"#CLIENT#"}
 			this.v.msgs.push(json)
+			
+			//-- 닉네임 자동 설정
+			var nick = this.getLS('nick');
+			if(nick){
+				this.send((new MsgObj({"app":"nick","fun":"","val":nick})));
+			}
 		},
 		"onclose":function(event){
 			console.log(this+".onclose()",event);
@@ -89,6 +95,7 @@ let controller = (function(){
 		},
 		"userHandler":function(json){
 			this.v.user = json.val;
+			this.setLS('nick',this.v.user.nick);
 		},
 		"msgHandler":function(json){
 			if(!json.nick){
@@ -180,6 +187,15 @@ let controller = (function(){
 		"hideModalRoomManager":function(){
 			$('#modalRoomManager').modal('hide')
 			$('#input_msg').focus();
+		},
+		"getLS":function(key){
+			key = "nodejs_chat_"+key;
+			return localStorage.getItem(key)
+		}
+		,
+		"setLS":function(key,val){
+			key = "nodejs_chat_"+key;
+			return localStorage.setItem(key,val);
 		}
 
 	}
