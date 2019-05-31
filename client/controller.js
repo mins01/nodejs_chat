@@ -180,7 +180,6 @@ let controller = (function(){
 				$(this.msgsBox).find('li:first').remove();
 			}
 			this.appendMsg(json)
-			console.log(document.hidden);
 			if(document.hidden){
 				this.noReadMsgCount++;
 				document.title="Unread : "+this.noReadMsgCount;
