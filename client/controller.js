@@ -30,7 +30,7 @@ let controller = (function(){
 
 			this.msgsBox.addEventListener("DOMNodeInserted", function () {
 				var $t = $(".msgs .scroll-y");
-				if($t.prop("scrollHeight") - $t.height() - $t.scrollTop()<50){
+				if($t.prop("scrollHeight") - $t.height() - $t.scrollTop()<(50*3)){
 					$t.scrollTop($("#msgsBox").height())	
 				}
 			}, false);
