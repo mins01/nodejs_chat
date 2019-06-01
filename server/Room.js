@@ -207,6 +207,19 @@ class Room{
 			if(room.leave(user)){
 			}
 			break;
+			case "kick": //여기서 하면 퇴장만 한다, roomManager 에서 하면 lobby로 이동시킨다
+			if(!room.isAdmin(user)){
+				console.warn("is not admin");
+			}else if(this.immutable){
+				user.send(new MsgObj("msg","system","Room is immutable."))
+			}else if(!room.users.has(mo.uid)){
+				user.send(new MsgObj("msg","system","User(#"+mo.uid+") is not exists in the room."))
+			}else{
+				var u = room.users.get(mo.val);
+				room.broadcast(new MsgObj("msg","notice","User("+u.nick+") was kicked out of the room by Admin("+user.nick+")"));
+				room.leave(u)
+			}
+			break;
 
 			console.warn("not support mo","roomHandler("+user+","+mo+","+room+")");
 			default:

@@ -95,7 +95,7 @@
 				</div>
 				<div class="subject text-overflow-ellipsis">{{ room.subject }}</div>
 				<div class="openModalRoom show-is-admin">
-					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalRoom()">🚪</button>
+					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalRoom()">👑</button>
 				</div>
 				<div class="openModalSetting">
 					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalSetting()">⚙️</button>
@@ -240,6 +240,20 @@
 								<input id="room_setMaxUserCount_val" name="val" type="number" required placeholder="num.." class="form-control" min="2" max="100" :disabled="room.immutable"/>
 								<div class="input-group-append ">
 									<button class="btn btn-warning" type="submit" :disabled="room.immutable">Change</button>
+								</div>
+							</div>
+						</form>
+						<hr>
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
+							<label for="nick_val">Kick user</label>
+							<input name="app" type="hidden" value="roomManager" />
+							<input name="fun" type="hidden" value="kick" />
+							<div class="inputMsg input-group">
+								<select id="room_kick_val" class="form-control" name="val">
+									<option v-for="u in room.users" :value="u.uid" :disabled="u.uid==user.uid" >{{ u.nick }}</option>
+								</select>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit" :disabled="room.immutable">Kick</button>
 								</div>
 							</div>
 						</form>

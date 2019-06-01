@@ -104,6 +104,8 @@ class RoomManager {
 
 		if(this.rooms.has(toRid) && this.leave(user,fromRid)){
 			this.join(user,toRid);
+		}else{
+			console.warn("Fail leaveAndJoin("+user+","+fromRid+","+toRid+")");
 		}
 	}
 	reqHandler(user,mo){
@@ -146,6 +148,22 @@ class RoomManager {
 			case "sync":
 				if(this.sync(user)){
 				}
+			break;
+
+			case "kick":
+			var room = this.rooms.get(mo.rid);
+			if(!room.isAdmin(user)){
+				console.warn("is not admin");
+			}else if(room.immutable){
+				user.send(new MsgObj("msg","system","Room is immutable."))
+			}else if(!room.users.has(mo.uid)){
+				user.send(new MsgObj("msg","system","User(#"+mo.uid+") is not exists in the room."))
+			}else{
+				var u = room.users.get(mo.val);
+				room.broadcast(new MsgObj("msg","notice","User("+u.nick+") was kicked out of the room by Admin("+user.nick+")"));
+				this.leaveAndJoin(u,room.rid,'lobby');
+				// room.leave(u)
+			}
 			break;
 		}
 	}
