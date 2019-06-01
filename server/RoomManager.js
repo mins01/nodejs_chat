@@ -82,10 +82,9 @@ class RoomManager {
 		var room = this.room(rid);
 		if(!room){
 			console.error("Not exists room.", rid);
-			return;
+			return false;
 		}
-
-		room.join(user);
+		return room.join(user);
 	}
 	leave(user,rid){
 		console.log(this+".leave("+user+","+rid+")" );
@@ -103,7 +102,9 @@ class RoomManager {
 	leaveAndJoin(user,fromRid,toRid){
 
 		if(this.rooms.has(toRid) && this.leave(user,fromRid)){
-			this.join(user,toRid);
+			if(!this.join(user,toRid)){
+				this.join(user,fromRid)
+			}
 		}else{
 			console.warn("Fail leaveAndJoin("+user+","+fromRid+","+toRid+")");
 		}
@@ -163,6 +164,15 @@ class RoomManager {
 				room.broadcast(new MsgObj("msg","notice","User("+u.nick+") was kicked out of the room by Admin("+user.nick+")"));
 				this.leaveAndJoin(u,room.rid,'lobby');
 				// room.leave(u)
+			}
+			break;
+			case "ban":
+			case "deleteBan":
+			if(!this.rooms.has(mo.rid)){
+				console.warn("Not exists room(#"+mo.rid+")");
+			}else{
+				var room = this.rooms.get(mo.rid);
+				room.reqHandler(user,mo);
 			}
 			break;
 		}

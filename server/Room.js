@@ -1,13 +1,15 @@
 // const UserManager = require("./UserManager.js");
 const MsgObj = require("./MsgObj.js");
 const ExtendedMap = require("./ExtendedMap.js");
-
+const ExtendedSet = require("./ExtendedSet.js");
 
 class Room{
 	constructor(rid,subject,opt){
 		this.rid = rid;
 		this.users = new ExtendedMap();
-		this.adminUids = new Set();
+		this.adminUids = new ExtendedSet();
+		this.banUuids = new ExtendedMap();
+		// this.banUuids.set("k","v");
 		this.subject = subject;
 		this.adminPassword = "1234";
 		this.immutable = false;
@@ -27,6 +29,7 @@ class Room{
 			"maxUserCount":this.maxUserCount,
 			"subject":this.subject,
 			"immutable":this.immutable,
+			"banUuids":this.banUuids.toJSON(),
 		}
 	}
 	getUsersWithisAdmin(){
@@ -90,22 +93,24 @@ class Room{
 
 	join(user){
 		console.log(this+".join("+user+")" );
-		if(this.maxUserCount <= this.userCount){
+		if(this.banUuids.has(user.uuid)){
+			var mo = new MsgObj("msg","system","You are baned from room("+this.subject+")");
+			user.send(mo);
+			return false;
+		}else if(this.maxUserCount <= this.userCount){
 			var mo = new MsgObj("msg","system","Exceeds the maximum user count.");
 			user.send(mo);
 			return false;
 		}else{
 			this.add(user);
-
 			var mo = new MsgObj("msg","notice",user.nick+" entered the room("+this.subject+").");
 			this.broadcast(mo)
-
 			if(this.users.size==1){
 				this.grantAdmin(user)
 			}
 			this.sync();
 		}
-
+		return true;
 	}
 	leave(user){
 		console.log(this+".leave("+user+")" );
@@ -152,6 +157,18 @@ class Room{
 		})
 	}
 
+
+	listBan(){
+
+	}
+	addBan(uuid){
+
+	}
+	deleteBan(uuid){
+
+	}
+
+
 	reqHandler(user,mo){
 		var room = this;
 		var r;
@@ -175,7 +192,7 @@ class Room{
 			case "setSubject":
 			if(!room.isAdmin(user)){
 				console.warn("is not admin");
-			}else if(this.immutable){
+			}else if(room.immutable){
 				user.send(new MsgObj("msg","system","Room is immutable."))
 			}else if(room.setSubject(mo.val)){
 				var mo2 = new MsgObj("msg","notice","The subject has been changed to '"+mo.val+"'.");
@@ -188,7 +205,7 @@ class Room{
 			case "setMaxUserCount":
 			if(!room.isAdmin(user)){
 				console.warn("is not admin");
-			}else if(this.immutable){
+			}else if(room.immutable){
 				user.send(new MsgObj("msg","system","Room is immutable."))
 			}else if(room.setMaxUserCount(mo.val)){
 				var mo2 = new MsgObj("msg","notice","The maximum user count has been changed to "+mo.val+".");
@@ -210,7 +227,7 @@ class Room{
 			case "kick": //여기서 하면 퇴장만 한다, roomManager 에서 하면 lobby로 이동시킨다
 			if(!room.isAdmin(user)){
 				console.warn("is not admin");
-			}else if(this.immutable){
+			}else if(room.immutable){
 				user.send(new MsgObj("msg","system","Room is immutable."))
 			}else if(!room.users.has(mo.uid)){
 				user.send(new MsgObj("msg","system","User(#"+mo.uid+") is not exists in the room."))
@@ -220,8 +237,37 @@ class Room{
 				room.leave(u)
 			}
 			break;
-
-			console.warn("not support mo","roomHandler("+user+","+mo+","+room+")");
+			case "ban":
+			// var room = this.rooms.get(mo.rid);
+			if(!room.isAdmin(user)){
+				console.warn("is not admin");
+			}else if(room.immutable){
+				user.send(new MsgObj("msg","system","Room is immutable."))
+			}else if(!room.users.has(mo.uid)){
+				user.send(new MsgObj("msg","system","User(#"+mo.uid+") is not exists in the room."))
+			}else{
+				var u = room.users.get(mo.val);
+				room.broadcast(new MsgObj("msg","notice","User("+u.nick+") was banned from the room by Admin("+user.nick+")"));
+				room.banUuids.set(u.uuid,u.nick);
+				room.sync();
+				// room.leave(u)
+			}
+			break;
+			case "deleteBan":
+			// var room = this.rooms.get(mo.rid);
+			if(!room.isAdmin(user)){
+				console.warn("is not admin");
+			}else if(room.immutable){
+				user.send(new MsgObj("msg","system","Room is immutable."))
+			}else if(!room.banUuids.has(mo.val)){
+				user.send(new MsgObj("msg","system","User(#"+mo.uid+") is not exists in ban list."))
+			}else{
+				var nick = room.banUuids.get(mo.val)
+				room.broadcast(new MsgObj("msg","notice","User("+nick+"#"+mo.val+") was not banned from the room by Admin("+user.nick+")"));
+				room.banUuids.delete(mo.val);
+				room.sync();
+			}
+			break;
 			default:
 		}
 	}
