@@ -54,6 +54,8 @@ class Chat{
 
 	}
 	first(user,mo){
+		console.log(this+".first("+user+","+mo+")");
+
 		if(mo.uuid != null && mo.uuid.length>0) {
 			user.uuid = mo.uuid;
 		}
@@ -65,6 +67,9 @@ class Chat{
 
 		user.sync();
 		this.rm.join(user,'lobby');
+		if(mo.rid){
+			this.rm.leaveAndJoin(user,'lobby',mo.rid);
+		}
 	}
 	removeConn(conn){
 		if(conn.user){

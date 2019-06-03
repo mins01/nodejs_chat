@@ -1,8 +1,8 @@
 "use strict";
 let controller = (function(){
 	let controller = {
-		"init":function(client){
-
+		"init":function(client,firstRid){
+			this.firstRid = firstRid;
 			this.v = new Vue({
 				el: '#chatApp',
 				data: {
@@ -86,7 +86,7 @@ let controller = (function(){
 			//-- 닉네임 자동 설정
 			var nick = this.getLS('nick');
 			var uuid = this.getLS('uuid');
-			var mo = new MsgObj({"app":"first","fun":"","val":""});
+			var mo = new MsgObj({"app":"first","fun":"","val":"","rid":this.firstRid});
 			if(nick){
 				mo.nick = nick;
 			}
@@ -150,6 +150,9 @@ let controller = (function(){
 			}
 		},
 		"roomHandler":function(json){
+			if(this.v.room.rid !='' && this.v.room.rid != json.val.rid){
+				document.location.hash="#"+json.val.rid;
+			}
 			this.v.room = json.val
 			// $("#roomManager_rid_val").val(this.v.room.rid);
 			if(	$('#modalRoomManager').hasClass("show")){

@@ -75,7 +75,7 @@ class Room{
 
 		}else{
 			this.adminUids.add(user.uid);
-			var mo = new MsgObj("msg","notice",user.nick+" become a administrator.");
+			var mo = new MsgObj("msg","notice",user.nick+" become a administrator in the room.");
 			this.broadcast(mo)
 			return true;
 		}

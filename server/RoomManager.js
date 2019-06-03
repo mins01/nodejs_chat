@@ -100,12 +100,14 @@ class RoomManager {
 		return true;
 	}
 	leaveAndJoin(user,fromRid,toRid){
-
-		if(this.rooms.has(toRid) && this.leave(user,fromRid)){
+		if(!this.rooms.has(toRid)){
+			user.send(new MsgObj("msg","system","Not exists room(#"+toRid+")"));
+		}else if(this.leave(user,fromRid)){
 			if(!this.join(user,toRid)){
 				this.join(user,fromRid)
 			}
 		}else{
+			user.send(new MsgObj("msg","system","Failed to enter the room(#"+toRid+")"))
 			console.warn("Fail leaveAndJoin("+user+","+fromRid+","+toRid+")");
 		}
 	}

@@ -52,8 +52,10 @@
 	<script>
 	var cl = Client.instance;
 	$(function(){
-		controller.init(cl);
+		var rid = document.location.hash.replace(/^#/,'');		
+		controller.init(cl,rid);
 		$('#input_msg').focus();
+		
 	})
 	</script>
 	<style>
@@ -267,7 +269,7 @@
 									<option v-for="(k,uuid) in room.banUuids" :value="uuid">[{{ k }}] {{ uuid.substr(0,10) }}...</option>
 								</select>
 								<div class="input-group-append ">
-									<button class="btn btn-warning" type="submit" >Delete</button>
+									<button class="btn btn-warning" type="submit" :disabled="room.immutable" >Delete</button>
 								</div>
 							</div>
 						</form>
