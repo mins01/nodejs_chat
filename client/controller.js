@@ -39,7 +39,7 @@ let controller = (function(){
 			document.addEventListener('visibilitychange',function(){
 				if(document.visibilityState=='visible'){
 					thisC.noReadMsgCount = 0;
-					document.title = "CHATTING";
+					document.title = thisC.v.room.subject;
 				}
 			},false)
 
@@ -152,6 +152,7 @@ let controller = (function(){
 		"roomHandler":function(json){
 			if(this.v.room.rid !='' && this.v.room.rid != json.val.rid){
 				document.location.hash="#"+json.val.rid;
+				document.title = json.val.subject;
 			}
 			this.v.room = json.val
 			// $("#roomManager_rid_val").val(this.v.room.rid);
@@ -196,7 +197,7 @@ let controller = (function(){
 			this.appendMsg(json)
 			if(document.hidden){
 				this.noReadMsgCount++;
-				document.title=(this.noReadMsgCount%2?"✉️":"📨")+"Unread : "+this.noReadMsgCount;
+				document.title=(this.noReadMsgCount%2?"✉️":"📨")+" "+this.noReadMsgCount +" / "+this.v.room.subject;;
 			}
 
 		},
