@@ -44,7 +44,7 @@ class RoomManager {
 	}
 
 	create(subject,rid){
-		if(rid==null){
+		if(rid==null || !rid){
 			var rid = Math.floor(Math.random()*34).toString(34)+(subject.length).toString(34)+(new Date).getTime().toString(34)
 		}
 		console.log(this+".createRoom("+subject+","+rid+")");
@@ -100,7 +100,8 @@ class RoomManager {
 		return true;
 	}
 	leaveAndJoin(user,fromRid,toRid){
-		if(!this.rooms.has(toRid)){
+		if(fromRid == toRid){
+		}else if(!this.rooms.has(toRid)){
 			user.send(new MsgObj("msg","system","Not exists room(#"+toRid+")"));
 		}else if(this.leave(user,fromRid)){
 			if(!this.join(user,toRid)){
@@ -115,7 +116,7 @@ class RoomManager {
 		var r;
 		switch (mo.fun) {
 			case "create":
-				if(r = this.create(mo.val)){
+				if(r = this.create(mo.val,mo.toRid)){
 					var mo2 = new MsgObj("roomManager","create",r.rid);
 					user.send(mo2)
 					this.sync(user)

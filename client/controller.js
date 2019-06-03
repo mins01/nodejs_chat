@@ -157,6 +157,7 @@ let controller = (function(){
 			// $("#roomManager_rid_val").val(this.v.room.rid);
 			if(	$('#modalRoomManager').hasClass("show")){
 				$("#roomManager_create_val").val("");
+				$("#roomManager_create_toRid").val("");
 				// $("#roomManager_rid_val").val(this.v.room.rid);
 				this.syncRoomManager();
 			}
@@ -221,12 +222,12 @@ let controller = (function(){
 
 			var mo = new MsgObj();
 			mo.app = f.app.value
+			mo.fun = "";
 			mo.val = "";
-			if(f.val){
-				mo.val = f.val.value
-			}
-			if(f.fun){
-				mo.fun = f.fun.value
+			
+			var farr = $(f).serializeArray()
+			for(var i=0,m=farr.length;i<m;i++){
+				mo[farr[i].name] = farr[i].value
 			}
 			this.send(mo);
 		},
@@ -264,6 +265,7 @@ let controller = (function(){
 			this.send((new MsgObj({"app":"roomManager","fun":"sync","val":""})));
 			// $("#roomManager_rid_val").val(this.v.room.rid);
 			$("#roomManager_create_val").val("");
+			$("#roomManager_create_toRid").val("");
 			$('#modalRoomManager').modal('show')
 		},
 		"hideModalRoomManager":function(){

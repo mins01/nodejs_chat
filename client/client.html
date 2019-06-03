@@ -298,6 +298,7 @@
 							<input name="fun" type="hidden" value="create" />
 							<div class="inputMsg input-group">
 								<input name="val" id="roomManager_create_val" type="text" required placeholder="Subject" class="form-control" maxlength="100"/>
+								<input name="toRid" id="roomManager_create_toRid" type="text" placeholder="room id (optional)" class="form-control" maxlength="20" pattern="^[^\s\n\x00-\x2F\x3A-\x40\x5B-\x60\x7B~\x7F]{0,20}$" />
 								<div class="input-group-append ">
 									<button class="btn btn-warning" type="submit">Create</button>
 								</div>
