@@ -246,6 +246,9 @@ let controller = (function(){
 				mo[farr[i].name] = farr[i].value
 			}
 			this.send(mo);
+			if(f.hasAttribute('data-reset')){
+				f.reset();
+			}
 		},
 		"formMsgOnSubmit":function(f){
 			if(!f.val.value.trim().length){

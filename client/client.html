@@ -337,7 +337,7 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<form  class="form-group" action="#" onsubmit="controller.uploadFileFromForm(this);return false;" method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
+						<form  class="form-group" action="#" onsubmit="controller.uploadFileFromForm(this);return false;" data-reset method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
 							<input name="dir" type="hidden" value="" />
 							
 							<label>Select a image</label>
@@ -352,7 +352,7 @@
 							</div>
 						</form>
 						
-						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;" method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;" data-reset method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
 							<input name="dir" type="hidden" value="" />
 							<input name="app" type="hidden" value="msg" />
 							<input name="fun" type="hidden" value="image" />
