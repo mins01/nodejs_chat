@@ -29,10 +29,7 @@ let controller = (function(){
 			})
 
 			this.msgsBox.addEventListener("DOMNodeInserted", function () {
-				var $t = $(".msgs .scroll-y");
-				if($t.prop("scrollHeight") - $t.height() - $t.scrollTop()<(50*3)){
-					$t.scrollTop($("#msgsBox").height())
-				}
+				thisC.msgScrollDown();
 			}, false);
 
 			document.title = "CHATTING";
@@ -201,6 +198,7 @@ let controller = (function(){
 			}
 		},
 		"appendMsg":function(json){
+			var thisC = this;
 			var t = this.template_msg.content.cloneNode(true);
 			$(t).find('li.msg').attr('data-app',json.app).attr('data-fun',json.fun).attr('data-val',json.val);
 			$(t).find('.nick').text(json.nick);
@@ -209,8 +207,12 @@ let controller = (function(){
 				a.href=json.val;
 				a.target="_blank";
 				var img = new Image();
+				img.onload = function(){
+					thisC.msgScrollDown();
+				}
 				img.alt = json.alt?json.alt:'';
 				img.src = json.val;
+				
 				var a2 = a.cloneNode(true);
 				a2.innerText = img.alt;
 				a.append(img);
@@ -330,7 +332,7 @@ let controller = (function(){
 				for(var i=0,m=rData.length;i<m;i++){
 					var r = rData[i];
 					if(r.result){
-						thisC.send(new MsgObj({"app":"msg","fun":"image","val":origin+r.downurl,"alt":r.basename}));	
+						thisC.send(new MsgObj({"app":"msg","fun":"image","val":origin+r.viewurl,"alt":r.basename}));	
 					}else{
 						thisC.msgHandler(new MsgObj({"app":"msg","fun":"system","val":r.error_msg}));
 					}
@@ -347,6 +349,16 @@ let controller = (function(){
 			});
 			f.reset();
 			return false;
+		},
+		"msgScrollDown":function(){
+			var f = function(){
+				var $t = $(".msgs .scroll-y");
+				if($t.prop("scrollHeight") - $t.height() - $t.scrollTop()< $t.height()*0.3 ){
+					$t.scrollTop($("#msgsBox").height())
+				}	
+			}
+			setTimeout(f,0)
+			
 		}
 
 	}
