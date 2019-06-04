@@ -282,6 +282,55 @@ let controller = (function(){
 			key = "nodejs_chat_"+key;
 			return localStorage.setItem(key,val);
 		}
+		,"uploadFileFromForm":function(f){
+			var thisC = this;
+			// var d = $(f).serialize();
+			// var url = f.action;
+			// var url = document.location.origin.replace(/(:\d+)$/,'')+"/WG2/ajax.upload.php"
+			var origin ="http://wwwdev.mins01.com"; 
+			var url = origin+"/WG2/ajax.upload.php"
+			var fd = new FormData()
+			fd.append("dir",f.dir.value);
+			console.log(fd);;
+			for(let i=0,m=f['upf[]'].files.length;i<m;i++){
+				fd.append('upf[]',f['upf[]'].files[i],f['upf[]'].files[i].name);
+			}
+			for (var [k,v] of fd.entries()){
+				console.log(k,v)
+			}
+			$.ajax({
+				url: url,
+				type: f.method, //GET
+				dataType: 'json', //xml, json, script, jsonp, or html
+				processData: false,
+				contentType: false,
+				data: fd,
+			})
+			.done(function(rData) { //통신 성공 시 호출
+				console.log(rData);
+				console.log("success");
+				for(var i=0,m=rData.length;i<m;i++){
+					var r = rData[i];
+					if(r.result){
+						var val = "📄"+r.basename+"\n"+origin+r.downurl
+						thisC.send(new MsgObj({"app":"msg","fun":"talk","val":val}));	
+					}else{
+						thisC.msgHandler(new MsgObj({"app":"msg","fun":"system","val":r.error_msg}));
+					}
+					
+				}
+				
+			})
+			.fail(function() { //통신 실패 시 호출
+				console.log("error");
+			})
+			.always(function() { //성공/실패 후 호출.
+				console.log("complete");
+				
+			});
+			f.reset();
+			return false;
+		}
 
 	}
 
