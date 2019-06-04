@@ -340,7 +340,7 @@
 						<form  class="form-group" action="#" onsubmit="controller.uploadFileFromForm(this);return false;" method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
 							<input name="dir" type="hidden" value="" />
 							
-							<label>Select a file</label>
+							<label>Select a image</label>
 							<div class="inputMsg input-group">
 								<div class="input-group-prepend ">
 									<span class="input-group-text">Select</span>
@@ -348,6 +348,20 @@
 								<input id="input_uploadFile" accept=".jpg,.gif,.png" name="upf[]" type="file" required placeholder="Subject" class="form-control" maxlength="100"/>
 								<div class="input-group-append ">
 									<button class="btn btn-warning" type="submit">Upload</button>
+								</div>
+							</div>
+						</form>
+						
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;" method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
+							<input name="dir" type="hidden" value="" />
+							<input name="app" type="hidden" value="msg" />
+							<input name="fun" type="hidden" value="image" />
+							<label>Insert image url</label>
+							<div class="inputMsg input-group">
+								<input name="val" type="url" required placeholder="http://" class="form-control"/>
+								<input name="alt" type="text" placeholder="alt(optional)" class="form-control"/>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">Send</button>
 								</div>
 							</div>
 						</form>

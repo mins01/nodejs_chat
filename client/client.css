@@ -133,3 +133,25 @@
 	font-weight: bold;
 	color: #fff;
 }
+
+.msg[data-fun="image"]{
+	background-color: #dedede;
+	font-weight: bold;
+}
+.msg[data-fun="image"] a.a4image{
+	display: inline-block;
+	background-image: url("imgs/bg.gif");
+	text-align: center;
+}
+.msg[data-fun="image"] a.a4link{
+	display: block;
+}
+
+.msg[data-fun="image"] a.a4image img{
+	max-width: 100px;max-height: 100px;
+	opacity: 0.1;
+	transition: all 3s ease-out;
+}
+.msg[data-fun="image"] a.a4image:hover img{
+	opacity: 1
+}

@@ -199,13 +199,28 @@ let controller = (function(){
 				this.noReadMsgCount++;
 				document.title=(this.noReadMsgCount%2?"✉️":"📨")+" "+this.noReadMsgCount +" / "+this.v.room.subject;;
 			}
-
 		},
 		"appendMsg":function(json){
 			var t = this.template_msg.content.cloneNode(true);
 			$(t).find('li.msg').attr('data-app',json.app).attr('data-fun',json.fun).attr('data-val',json.val);
 			$(t).find('.nick').text(json.nick);
-			$(t).find('.val').text(json.val).autolink();
+			if(json.fun=='image'){
+				var a = document.createElement('a');
+				a.href=json.val;
+				a.target="_blank";
+				var img = new Image();
+				img.alt = json.alt?json.alt:'';
+				img.src = json.val;
+				var a2 = a.cloneNode(true);
+				a2.innerText = img.alt;
+				a.append(img);
+				a.className="a4image"
+				a2.className="a4link"
+				
+				$(t).find('.val').append(a).append(a2);
+			}else{
+				$(t).find('.val').text(json.val).autolink();
+			}
 			$(this.msgsBox).append(t);
 		},
 		"send":function(mo){
@@ -312,8 +327,7 @@ let controller = (function(){
 				for(var i=0,m=rData.length;i<m;i++){
 					var r = rData[i];
 					if(r.result){
-						var val = "📄"+r.basename+"\n"+origin+r.downurl
-						thisC.send(new MsgObj({"app":"msg","fun":"talk","val":val}));	
+						thisC.send(new MsgObj({"app":"msg","fun":"image","val":origin+r.downurl,"alt":r.basename}));	
 					}else{
 						thisC.msgHandler(new MsgObj({"app":"msg","fun":"system","val":r.error_msg}));
 					}
