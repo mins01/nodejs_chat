@@ -287,7 +287,7 @@ let controller = (function(){
 			// var d = $(f).serialize();
 			// var url = f.action;
 			// var url = document.location.origin.replace(/(:\d+)$/,'')+"/WG2/ajax.upload.php"
-			var origin ="http://wwwdev.mins01.com"; 
+			var origin = document.location.origin.replace(/(:\d+)$/,''); 
 			var url = origin+"/WG2/ajax.upload.php"
 			var fd = new FormData()
 			fd.append("dir",f.dir.value);
