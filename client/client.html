@@ -337,7 +337,7 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<form  class="form-group" action="#" onsubmit="controller.uploadFileFromForm(this);return false;" data-reset method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
+						<!-- <form  class="form-group" action="#" onsubmit="controller.uploadFileFromForm(this);return false;" data-reset method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
 							<input name="dir" type="hidden" value="" />
 							
 							<label>Select a image</label>
@@ -350,7 +350,7 @@
 									<button class="btn btn-warning" type="submit">Upload</button>
 								</div>
 							</div>
-						</form>
+						</form> -->
 						
 						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;" data-reset method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
 							<input name="dir" type="hidden" value="" />
@@ -358,11 +358,16 @@
 							<input name="fun" type="hidden" value="image" />
 							<label>Insert image url</label>
 							<div class="inputMsg input-group">
-								<input name="val" type="url" required placeholder="http://" class="form-control"/>
-								<input name="alt" type="text" placeholder="alt(optional)" class="form-control"/>
+								<input name="val" type="url" required placeholder="http://" class="form-control" style="flex:2 1 auto" onchange="document.querySelector('#msg_image_preview').src=this.value"/>
+								<input name="alt" type="text" placeholder="alt(optional)" class="form-control" />
 								<div class="input-group-append ">
 									<button class="btn btn-warning" type="submit">Send</button>
 								</div>
+							</div>
+							<div class=" m-3 text-center">
+								<a href="about:blank" target="_blank" class="a4image" onclick="this.href = this.querySelector('img').src">
+									<img id="msg_image_preview" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-reset-src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+								</a>
 							</div>
 						</form>
 					</div>

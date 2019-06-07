@@ -260,6 +260,9 @@ let controller = (function(){
 			this.send(mo);
 			if(f.hasAttribute('data-reset')){
 				f.reset();
+				if($(f).find("#msg_image_preview").length>0){
+					$(f).find("#msg_image_preview").prop("src",$(f).find("#msg_image_preview").attr('data-reset-src'))
+				}
 			}
 		},
 		"formMsgOnSubmit":function(f){

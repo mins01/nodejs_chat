@@ -138,21 +138,21 @@
 	background-color: #dedede;
 	font-weight: bold;
 }
-.msg[data-fun="image"] a.a4image{
+a.a4image{
 	display: inline-block;
 	background-image: url("imgs/bg.gif");
 	text-align: center;
 }
-.msg[data-fun="image"] a.a4link{
+a.a4link{
 	display: block;
 }
 
-.msg[data-fun="image"] a.a4image img{
-	max-width: 100px;max-height: 100px;
+a.a4image img{
+	max-width: 300px; max-height: 200px;
 	opacity: 0.1;
-	transition: all 3s ease-out;
+	transition: opacity 1s ease-out;
 	overflow: hidden;
 }
-.msg[data-fun="image"] a.a4image:hover img{
+a.a4image:hover img{
 	opacity: 1
 }
