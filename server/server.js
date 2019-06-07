@@ -1,9 +1,12 @@
 'use strict'
 let ws = require("../node_modules/nodejs-websocket");
+let fs = require('fs');
 
 let nowebserver = true;
-let webport = 8080;
+let httpport = 8080;
+let httpsport = 8080;
 let port = 8081; //서버포트
+let secure = 0
 
 let argv = process.argv;
 for(var i=0,m=argv.length;i<m;i++){
@@ -12,23 +15,53 @@ for(var i=0,m=argv.length;i<m;i++){
 	if(arg=='--nowebserver'){
 		nowebserver = false;
 		
-	}else if(arg=='--webport' && argv[i+1] && !isNaN(argv[i+1])){
-		webport = argv[i+1];
+	}else if(arg=='--httpport' && argv[i+1] && !isNaN(argv[i+1])){
+		httpport = argv[i+1];
 		i++;
 	}else if(arg=='--port' && argv[i+1] && !isNaN(argv[i+1])){
 		port = argv[i+1];
+		i++;
+	}else if(arg=='--secure' && argv[i+1] && !isNaN(argv[i+1])){
+		secure = parseInt(argv[i+1]);
 		i++;
 	}
 	
 }
 // nowebserver = false;
+/*
+ssl
+*/
+const sslOptions_new10 = {
+	secure : false,
+	key: fs.readFileSync('cert/new10.factory.co.kr-cert/privkey1.pem'),
+	cert: fs.readFileSync('cert/new10.factory.co.kr-cert/cert1.pem'),
+	
+	// This is necessary only if using client certificate authentication.
+	requestCert: false,
+	
+	// This is necessary only if the client uses a self-signed certificate.
+	ca: [ fs.readFileSync('cert/new10.factory.co.kr-cert/chain1.pem') ]
+};
+const sslOptions_mins01 = {
+	secure : false,
+	key: fs.readFileSync('cert/wwwdev.mins01.com-cert/privkey1.pem'),
+	cert: fs.readFileSync('cert/wwwdev.mins01.com-cert/cert1.pem'),
+	
+	// This is necessary only if using client certificate authentication.
+	requestCert: false,
+	
+	// This is necessary only if the client uses a self-signed certificate.
+	// ca: [ fs.readFileSync('cert/new10.factory.co.kr-cert/chain1.pem') ]
+};
+const sslOptions = sslOptions_mins01;
 /*테스트 클라이언트용 웹서버 */
 if(nowebserver){
 	console.log("@webserver : start");
 	let http = require("http");
+	let https = require("https");
 	let fs = require("fs");
 	let url = require('url');
-	const serverHttp = http.createServer(function (req, res) {
+	let cb = function (req, res) {
 		var requrlobj = url.parse(req.url);
 		var requrl = requrlobj.pathname
 		if(!requrl || requrl=='/'){
@@ -61,20 +94,36 @@ if(nowebserver){
 			res.write('Hello World');
 			res.end();
 		}
-	})
-	
-	serverHttp.listen(parseInt(webport));
+	}
+	if(secure){
+		const serverHttps = https.createServer(sslOptions,cb)
+		serverHttps.listen(parseInt(httpsport));
+		console.log("HTTPS - listen:"+httpsport);
+	}else{
+		const serverHttp = http.createServer(cb)
+		serverHttp.listen(parseInt(httpport));	
+		console.log("HTTP - listen:"+httpport);
+	}
 }
 
 
 
-/* 게임 서버 */
+/* 채팅 서버 */
 // import Chat from  'Chat.js';
 let Chat = require('./Chat');
 
+
 console.log("@server : start");
-var chat = new Chat();
-var server = ws.createServer(function(chat){
+let chat = new Chat();
+var chatServerOption = Object.assign({},sslOptions);
+if(secure){
+	chatServerOption.secure = !!secure;
+	console.log("WSS - listen:"+httpport);
+}else{
+	console.log("WS - listen:"+httpport);
+}
+// console.log(chatServerOption);
+var server = ws.createServer(chatServerOption,function(chat){
 	return function (conn) {
 		console.log("New connection")
 		chat.addConn(conn);

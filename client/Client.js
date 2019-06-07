@@ -22,14 +22,14 @@ class Client {
 		return this.constructor.name;
 	}
 	
-	connect(url){
+	connect(url,protocols){
 		if(this.conn != null){
 			this.conn.close();
 		}
 		if(!url){
 			url = "ws://"+window.location.hostname+":8081";
 		}
-		this.conn = new WebSocket(url);
+		this.conn = protocols?new WebSocket(url,new WebSocket(url)):new WebSocket(url);
 		this.conn.onopen = this.onopen.bind(this);
 		this.conn.onclose = this.onclose.bind(this);
 		this.conn.onerror = this.onerror.bind(this);

@@ -45,7 +45,7 @@ let controller = (function(){
 			this.client.onclose = this.onclose.bind(this);
 			this.client.onerror = this.onerror.bind(this);
 			this.client.onmessage = this.onmessage.bind(this);
-			this.client.connect();
+			this.connect();
 			this.reconnect.retry = 5;
 			this.reconnect.tm = null;
 
@@ -54,6 +54,16 @@ let controller = (function(){
 			}
 
 
+		},
+		"connect":function(){
+			if(document.location.protocol=='https:'){
+				var url = "wss://"+window.location.hostname+":8081";
+			}else{
+				var url = "ws://"+window.location.hostname+":8081";	
+			}
+			
+			var protocols = null;
+			this.client.connect(url,protocols);
 		},
 		"toString":function(){
 			return "controller";
@@ -69,7 +79,7 @@ let controller = (function(){
 					return;
 				}
 				thisC.msgHandler({"app":"msg","fun":"system","val":"Retry connect : remain "+thisC.reconnect.retry,"nick":"#CLIENT#"});
-				thisC.client.connect();
+				thisC.connect();
 
 				thisC.reconnect.retry--;
 
