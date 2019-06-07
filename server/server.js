@@ -31,29 +31,28 @@ for(var i=0,m=argv.length;i<m;i++){
 /*
 ssl
 */
-const sslOptions_new10 = {
-	secure : false,
-	key: fs.readFileSync('cert/new10.factory.co.kr-cert/privkey1.pem'),
-	cert: fs.readFileSync('cert/new10.factory.co.kr-cert/cert1.pem'),
-	
-	// This is necessary only if using client certificate authentication.
-	requestCert: false,
-	
-	// This is necessary only if the client uses a self-signed certificate.
-	ca: [ fs.readFileSync('cert/new10.factory.co.kr-cert/chain1.pem') ]
-};
-const sslOptions_mins01 = {
-	secure : false,
-	key: fs.readFileSync('cert/wwwdev.mins01.com-cert/privkey1.pem'),
-	cert: fs.readFileSync('cert/wwwdev.mins01.com-cert/cert1.pem'),
-	
-	// This is necessary only if using client certificate authentication.
-	requestCert: false,
-	
-	// This is necessary only if the client uses a self-signed certificate.
-	// ca: [ fs.readFileSync('cert/new10.factory.co.kr-cert/chain1.pem') ]
-};
-const sslOptions = sslOptions_mins01;
+const sslOptions_config = [
+	{},
+	{
+		secure : true,
+		key: fs.readFileSync('cert/wwwdev.mins01.com-cert/privkey1.pem'),
+		cert: fs.readFileSync('cert/wwwdev.mins01.com-cert/cert1.pem'),
+		// This is necessary only if using client certificate authentication.
+		requestCert: false,
+		// This is necessary only if the client uses a self-signed certificate.
+		// ca: [ fs.readFileSync('cert/new10.factory.co.kr-cert/chain1.pem') ]
+	},
+	{
+		secure : true,
+		key: fs.readFileSync('cert/new10.factory.co.kr-cert/privkey1.pem'),
+		cert: fs.readFileSync('cert/new10.factory.co.kr-cert/cert1.pem'),
+		// This is necessary only if using client certificate authentication.
+		requestCert: false,
+		// This is necessary only if the client uses a self-signed certificate.
+		ca: [ fs.readFileSync('cert/new10.factory.co.kr-cert/chain1.pem') ]
+	},
+]
+const sslOptions = sslOptions_config[secure];
 /*테스트 클라이언트용 웹서버 */
 if(nowebserver){
 	console.log("@webserver : start");
@@ -117,10 +116,9 @@ console.log("@server : start");
 let chat = new Chat();
 var chatServerOption = Object.assign({},sslOptions);
 if(secure){
-	chatServerOption.secure = !!secure;
-	console.log("WSS - listen:"+httpport);
+	console.log("WSS - listen:"+port);
 }else{
-	console.log("WS - listen:"+httpport);
+	console.log("WS - listen:"+port);
 }
 // console.log(chatServerOption);
 var server = ws.createServer(chatServerOption,function(chat){
