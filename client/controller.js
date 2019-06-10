@@ -366,7 +366,7 @@ let controller = (function(){
 		"msgScrollDown":function(){
 			var f = function(){
 				var $t = $(".msgs .scroll-y");
-				if($t.prop("scrollHeight") - $t.height() - $t.scrollTop()< $t.height()*0.3 ){
+				if($t.prop("scrollHeight") - $t.height() - $t.scrollTop() < Math.max($t.height()/2,500) ){
 					$t.scrollTop($("#msgsBox").height())
 				}	
 			}
