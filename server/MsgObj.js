@@ -2,9 +2,14 @@
 
 class MsgObj {
 	constructor(app,fun,val){
-		this.app = (app!=null)?app:"";
-		this.fun = (fun!=null)?fun:"";
-		this.val = (val!=null)?val:"";
+		if(typeof app =='object'){
+			this.load(app)
+		}else{
+			this.app = (app!=null)?app:"";
+			this.fun = (fun!=null)?fun:"";
+			this.val = (val!=null)?val:"";
+		}
+
 	}
 	load(obj){
 		for(var x in obj){

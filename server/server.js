@@ -14,7 +14,7 @@ for(var i=0,m=argv.length;i<m;i++){
 	arg = arg.toLowerCase();
 	if(arg=='--nowebserver'){
 		nowebserver = false;
-		
+
 	}else if(arg=='--httpport' && argv[i+1] && !isNaN(argv[i+1])){
 		httpport = argv[i+1];
 		i++;
@@ -25,7 +25,7 @@ for(var i=0,m=argv.length;i<m;i++){
 		secure = parseInt(argv[i+1]);
 		i++;
 	}
-	
+
 }
 // nowebserver = false;
 /*
@@ -35,8 +35,8 @@ const sslOptions_config = [
 	{},
 	{
 		secure : true,
-		key: fs.readFileSync('cert/wwwdev.mins01.com-cert/privkey1.pem'),
-		cert: fs.readFileSync('cert/wwwdev.mins01.com-cert/cert1.pem'),
+		key: fs.existsSync('cert/wwwdev.mins01.com-cert/privkey1.pem')?fs.readFileSync('cert/wwwdev.mins01.com-cert/privkey1.pem'):'',
+		cert: fs.existsSync('cert/wwwdev.mins01.com-cert/cert1.pem')?fs.readFileSync('cert/wwwdev.mins01.com-cert/cert1.pem'):'',
 		// This is necessary only if using client certificate authentication.
 		requestCert: false,
 		// This is necessary only if the client uses a self-signed certificate.
@@ -44,12 +44,12 @@ const sslOptions_config = [
 	},
 	{
 		secure : true,
-		key: fs.readFileSync('cert/new10.factory.co.kr-cert/privkey1.pem'),
-		cert: fs.readFileSync('cert/new10.factory.co.kr-cert/cert1.pem'),
+		key: fs.existsSync('cert/new10.factory.co.kr-cert/privkey1.pem')?fs.readFileSync('cert/new10.factory.co.kr-cert/privkey1.pem'):'',
+		cert: fs.existsSync('cert/new10.factory.co.kr-cert/cert1.pem')?fs.readFileSync('cert/new10.factory.co.kr-cert/cert1.pem'):'',
 		// This is necessary only if using client certificate authentication.
 		requestCert: false,
 		// This is necessary only if the client uses a self-signed certificate.
-		ca: [ fs.readFileSync('cert/new10.factory.co.kr-cert/chain1.pem') ]
+		ca: [ fs.existsSync('cert/new10.factory.co.kr-cert/chain1.pem')?fs.readFileSync('cert/new10.factory.co.kr-cert/chain1.pem'):'' ]
 	},
 ]
 const sslOptions = sslOptions_config[secure];
@@ -67,7 +67,7 @@ if(nowebserver){
 			requrl = "/client.html";
 		}
 		requrl = requrl.replace(/\.\.+/g,'').replace(/\/\/+/g,'')
-		requrl = "../client"+requrl;	
+		requrl = "../client"+requrl;
 		if(fs.existsSync(requrl)){
 			console.log(req.connection.remoteAddress +":"+requrl+":OK");
 			if(requrl.indexOf(".js")>-1){
@@ -86,7 +86,7 @@ if(nowebserver){
 			}).on('error', function(e) {
 				console.log(e);
 			})
-			
+
 		}else{
 			console.log(req.connection.remoteAddress +":"+requrl+":FAIL");
 			res.writeHead(404, {'Content-Type' : 'text/plain'});
@@ -100,7 +100,7 @@ if(nowebserver){
 		console.log("HTTPS - listen:"+httpsport);
 	}else{
 		const serverHttp = http.createServer(cb)
-		serverHttp.listen(parseInt(httpport));	
+		serverHttp.listen(parseInt(httpport));
 		console.log("HTTP - listen:"+httpport);
 	}
 }

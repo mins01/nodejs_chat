@@ -60,9 +60,9 @@ let controller = (function(){
 			if(document.location.protocol=='https:'){
 				var url = "wss://"+window.location.hostname+":8081";
 			}else{
-				var url = "ws://"+window.location.hostname+":8081";	
+				var url = "ws://"+window.location.hostname+":8081";
 			}
-			
+
 			var protocols = null;
 			this.client.connect(url,protocols);
 		},
@@ -141,7 +141,7 @@ let controller = (function(){
 				if(this.apps[json.app]!=null){
 					this.apps[json.app].jsonHandler(json);
 				}else{
-					
+
 				}
 				break;
 			}
@@ -164,18 +164,27 @@ let controller = (function(){
 			}
 		},
 		"roomHandler":function(json){
-			if(this.v.room.rid !='' && this.v.room.rid != json.val.rid){
-				document.location.hash="#"+json.val.rid;
-				document.title = json.val.subject;
-			}
-			this.v.room = json.val
-			// $("#roomManager_rid_val").val(this.v.room.rid);
-			if(	$('#modalRoomManager').hasClass("show")){
-				$("#roomManager_create_val").val("");
-				$("#roomManager_create_toRid").val("");
+
+			switch (json.fun) {
+				case "sync":
+				if(this.v.room.rid !='' && this.v.room.rid != json.val.rid){
+					document.location.hash="#"+json.val.rid;
+					document.title = json.val.subject;
+				}
+				this.v.room = json.val
 				// $("#roomManager_rid_val").val(this.v.room.rid);
-				this.syncRoomManager();
+				if(	$('#modalRoomManager').hasClass("show")){
+					$("#roomManager_create_val").val("");
+					$("#roomManager_create_toRid").val("");
+					// $("#roomManager_rid_val").val(this.v.room.rid);
+					this.syncRoomManager();
+				}
+				break;
+				case "leave":
+
+				break;
 			}
+
 		},
 		"userHandler":function(json){
 			this.v.user = json.val;
@@ -229,13 +238,13 @@ let controller = (function(){
 				}
 				img.alt = json.alt?json.alt:'';
 				img.src = json.val;
-				
+
 				var a2 = a.cloneNode(true);
 				a2.innerText = img.alt;
 				a.append(img);
 				a.className="a4image"
 				a2.className="a4link"
-				
+
 				$(t).find('.val').append(a).append(a2);
 			}else{
 				$(t).find('.val').text(json.val).autolink();
@@ -245,7 +254,7 @@ let controller = (function(){
 		"send":function(mo){
 			if(mo.rid==null) mo.rid = this.v.room.rid;
 			this.client.send(mo);
-			console.log("send("+mo+")");
+			// console.log("send("+mo+")");
 		},
 		"join":function(rid){
 			if(this.v.room.rid==rid){return false;}
@@ -259,7 +268,7 @@ let controller = (function(){
 			mo.app = f.app.value
 			mo.fun = "";
 			mo.val = "";
-			
+
 			var farr = $(f).serializeArray()
 			for(var i=0,m=farr.length;i<m;i++){
 				mo[farr[i].name] = farr[i].value
@@ -327,7 +336,7 @@ let controller = (function(){
 			// var d = $(f).serialize();
 			// var url = f.action;
 			// var url = document.location.origin.replace(/(:\d+)$/,'')+"/WG2/ajax.upload.php"
-			var origin = document.location.origin.replace(/(:\d+)$/,''); 
+			var origin = document.location.origin.replace(/(:\d+)$/,'');
 			var url = origin+"/WG2/ajax.upload.php"
 			var fd = new FormData()
 			fd.append("dir",f.dir.value);
@@ -352,20 +361,20 @@ let controller = (function(){
 				for(var i=0,m=rData.length;i<m;i++){
 					var r = rData[i];
 					if(r.result){
-						thisC.send(new MsgObj({"app":"msg","fun":"image","val":origin+r.viewurl,"alt":r.basename}));	
+						thisC.send(new MsgObj({"app":"msg","fun":"image","val":origin+r.viewurl,"alt":r.basename}));
 					}else{
 						thisC.msgHandler(new MsgObj({"app":"msg","fun":"system","val":r.error_msg}));
 					}
-					
+
 				}
-				
+
 			})
 			.fail(function() { //통신 실패 시 호출
 				console.log("error");
 			})
 			.always(function() { //성공/실패 후 호출.
 				console.log("complete");
-				
+
 			});
 			f.reset();
 			return false;
@@ -375,10 +384,10 @@ let controller = (function(){
 				var $t = $(".msgs .scroll-y");
 				if($t.prop("scrollHeight") - $t.height() - $t.scrollTop() < Math.max($t.height()/2,500) ){
 					$t.scrollTop($("#msgsBox").height())
-				}	
+				}
 			}
 			setTimeout(f,0)
-			
+
 		}
 
 	}

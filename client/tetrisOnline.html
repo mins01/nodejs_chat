@@ -9,27 +9,27 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<link rel="shortcut icon" href="http://www.mins01.com/favicon.ico">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	
+
 	<!-- <script src="/js/ForGoogle.js"></script> -->
 	<!-- google analytics -->
 	<!-- <script>ForGoogle.analytics()</script> -->
-	
-	
+
+
 	<!-- jquery 관련 -->
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-	
-	
+
+
 	<!-- 부트스트랩 4 : IE8지원안됨! -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
 	<!-- vue.js -->
 	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
-	
-	
-	
+
+
+
 	<!-- meta og -->
-	
+
 	<meta property="og:title" content="nodejs_chat">
 	<meta property="og:description" content="nodejs_chat">
 	<meta name="og:image" content="http://www.mins01.com/img/logo.gif">
@@ -37,35 +37,38 @@
 	<meta property="og:image:height" content="70" />
 	<meta property="og:site_name" content="nodejs_chat" />
 	<meta property="og:type" content="website">
-	
+
 	<!-- //meta og -->
-	
+
 	<script src="vue_component.js"></script>
 	<script src="jquery.autolink.js"></script>
 	<script src="helper.js"></script>
-	
+
 	<script src="Client.js"></script>
 	<script src="MsgObj.js"></script>
 	<script src="controller.js"></script>
 	<link rel="stylesheet" href="client.css" crossorigin="anonymous">
 
-	<script src="tetrisOnline.js"></script>	
+	<script src="tetrisOnline.js"></script>
 
-	
-	
-	<link rel="stylesheet" href="https://mins01.github.io/game_tetris/tetrisBoxGame.css">
+
+	<!--
+	http://wwwdev.mins01.com/game/tetris/
+	https://mins01.github.io/game_tetris
+	-->
+	<link rel="stylesheet" href="http://wwwdev.mins01.com/game/tetris/tetrisBoxGame.css">
 	<!-- https://daneden.github.io/animate.css/ -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 
-	<script src="https://mins01.github.io/game_tetris/modules/js_TimerChain/TimerChain.js"></script>
-	<script src="https://mins01.github.io/game_tetris/modules/ui_AppearBox/AppearBox.js"></script>
-	
-	<script src="https://mins01.github.io/game_tetris/tetrisStags.js"></script>
-	<script src="https://mins01.github.io/game_tetris/Tetris.js"></script>
-	<script src="https://mins01.github.io/game_tetris/Tetrimino.js"></script>
-	<script src="https://mins01.github.io/game_tetris/tetriminoMaps.js"></script>
-	<script src="https://mins01.github.io/game_tetris/tetrisBoxGame.js"></script>
-	<script src="https://mins01.github.io/game_tetris/GamepadHandler.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/modules/js_TimerChain/TimerChain.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/modules/ui_AppearBox/AppearBox.js"></script>
+
+	<script src="http://wwwdev.mins01.com/game/tetris/tetrisStags.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/Tetris.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/Tetrimino.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/tetriminoMaps.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/tetrisBoxGame.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/GamepadHandler.js"></script>
 
 	<script>
 	// var ttrg = tetrisBoxGame();
@@ -83,16 +86,16 @@
 	// 	})
 	// })
 	</script>
-	
-	
+
+
 	<script>
 	var cl = Client.instance;
 	$(function(){
-		var rid = document.location.hash.replace(/^#/,'');		
+		var rid = document.location.hash.replace(/^#/,'');
 		controller.init(cl,rid);
 		controller.apps.tetris = tetrisOnline;
 		$('#input_msg').focus();
-		
+
 	})
 	</script>
 	<style>
@@ -115,10 +118,10 @@
 <body>
 	<div class="container">
 		<h1 class="sr-only">nodejs_chat</h1>
-		
-		
-		
-		
+
+
+
+
 	</div>
 	<template id="template_msg" >
 		<li  class="list-group-item msg" data-app="msg.app" data-fun="msg.fun" data-val="msg.val">
@@ -140,8 +143,24 @@
 					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalSetting()">⚙️</button>
 				</div>
 			</header>
-			<div class="gameBoxes">
-				<button type="button" onclick="tetrisOnline.start();" class="gameBox btn btn-info">Start</button>
+			<div class="mb-1" style="display:flex;flex-direction:row">
+				<div style="flex:1 0 0">
+					<button type="button" style="width:100%;" onclick="tetrisOnline.start();" class="gameBox btn btn-info">Start</button>
+				</div>
+				<div  style="flex:1 0 0">
+				<div id="info1st" style="text-align:center;">
+
+				</div>
+				</div>
+
+			</div>
+			<div class="content_gameBoxes">
+
+				<div style="clear:both"></div>
+				<div class="gameBoxes scroll-y">
+
+				</div>
+				<div style="clear:both"></div>
 
 			</div>
 			<div class="content">
@@ -150,7 +169,7 @@
 						<ul class="list-group" id="msgsBox">
 						</ul>
 					</div>
-					
+
 				</article>
 				<aside class="users  d-none d-md-block d-lg-block">
 					<div class="scroll-y">
@@ -159,7 +178,7 @@
 							<li class="list-group-item text-overflow-ellipsis" v-for="u in room.users" :title="u.nick" :data-uid="u.uid" :data-is-admin="u.isAdmin?1:0" :data-is-mine="u.uid==user.uid?1:0">{{ u.nick }}</li>
 						</ul>
 					</div>
-					
+
 				</aside>
 			</div>
 			<footer class="input">
@@ -177,15 +196,15 @@
 						<div class="input-group-append">
 							<button class="btn btn-success" type="submit">send</button>
 						</div>
-					
+
 					</div>
 				</form>
 			</footer>
-			
+
 		</div>
-		
-		
-		
+
+
+
 		<!-- modalSetting -->
 		<div class="modal fade" id="modalSetting" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -210,7 +229,7 @@
 								<small class="form-text text-muted">Excluding special symbols</small>
 							</div>
 						</form>
-						
+
 						<form  class="form-group hide-is-admin" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalSetting();return false;">
 							<hr />
 							<label for="nick_val">Get permission for admin</label>
@@ -223,8 +242,8 @@
 								</div>
 							</div>
 						</form>
-						
-						
+
+
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -321,7 +340,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- modalRoom -->
 		<div class="modal fade" id="modalRoomManager" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog" role="document">
@@ -380,7 +399,7 @@
 					<div class="modal-body">
 						<!-- <form  class="form-group" action="#" onsubmit="controller.uploadFileFromForm(this);return false;" data-reset method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
 							<input name="dir" type="hidden" value="" />
-							
+
 							<label>Select a image</label>
 							<div class="inputMsg input-group">
 								<div class="input-group-prepend ">
@@ -392,7 +411,7 @@
 								</div>
 							</div>
 						</form> -->
-						
+
 						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;" data-reset method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
 							<input name="dir" type="hidden" value="" />
 							<input name="app" type="hidden" value="msg" />
@@ -428,12 +447,13 @@
 	<template id="tetrisHtml">
 		<div class="ttrbg">
 			<div class="info-box">
-
+				<div class="textInfo textPlayer"></div>
 				<div class="textInfo textLevel"></div>
 				<div class="textInfo textScore"></div>
+				<div class="textInfo textAttacked"></div>
 				<div class="textInfo textRemovedBlocks"></div>
 				<div class="textInfo textUsedTetriminoes"></div>
-				
+
 				<div class="ttrbg-grid next">
 					<div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div>
 					<div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div>
@@ -448,9 +468,9 @@
 					<div class="appear-box-content">
 						TETRIS
 					</div>
-				</div>	
+				</div>
 			</div>
-		</div>	
+		</div>
 	</template>
 </body>
 </html>

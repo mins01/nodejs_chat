@@ -114,11 +114,18 @@ class Room{
 	}
 	leave(user){
 		console.log(this+".leave("+user+")" );
+
+		// 임시
+
+
 		var mo = new MsgObj("msg","notice",user.nick+" left the room("+this.subject+").");
 		this.remove(user);
 		this.broadcast(mo);
+		this.broadcast((new MsgObj({"app":"tetris","fun":"leave","val":user.uid})));
+		this.broadcast(new MsgObj("room","leave",user.uid));
 		this.sync();
 		user.send(mo);
+
 	}
 	sync(){
 		var mo = new MsgObj();

@@ -7,17 +7,17 @@
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: #f1f1f1; 
+  background: #f1f1f1;
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
 
 
@@ -185,13 +185,21 @@ a.a4image:hover img{
 
 
 
-#chat-box div.gameBoxes{
-	flex: 1 0 0;
+#chat-box div.content_gameBoxes{
+	flex: 3 0 0;
 
 	min-height: 0;
 	margin-bottom:5px;
 }
- div.gameBox{
-	float: left;
-  width:150px;height:150px;
+div.gameBox{
+  float: left;
+  width:150px;
+
+}
+div.gameBox[data-is-mine="1"]{
+  width:200px;
+}
+div.gameBox[data-is-mine="0"]{
+  width:100px;
+  /* transform: scale(0.5); */
 }
