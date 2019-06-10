@@ -122,7 +122,7 @@
 				</aside>
 			</div>
 			<footer class="input">
-				<form action="#" name="formMsg" onsubmit="controller.formMsgOnSubmit(this); return false;" >
+				<form action="#" name="formMsg" onsubmit="controller.formMsgOnSubmit(this);this.val.focus(); return false;" >
 					<input name="app" type="hidden" value="msg" />
 					<input name="fun" type="hidden" value="talk" />
 					<div class="inputMsg input-group">
