@@ -180,3 +180,18 @@ a.a4image img{
 a.a4image:hover img{
 	opacity: 1
 }
+
+
+
+
+
+#chat-box div.gameBoxes{
+	flex: 1 0 0;
+
+	min-height: 0;
+	margin-bottom:5px;
+}
+ div.gameBox{
+	float: left;
+  width:150px;height:150px;
+}
