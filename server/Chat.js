@@ -3,12 +3,14 @@ const UserManager = require("./UserManager.js");
 const Room = require("./Room.js");
 const User = require("./User.js");
 const MsgObj = require("./MsgObj.js");
+const Tetris = require("./Tetris.js");
 
 
 class Chat{
 	constructor(){
 		console.log("Chat()");
-
+		this.apps = {}
+		this.apps['tetris'] = new Tetris();
 		// this.limitUsers = 10;
 		this.rm = new RoomManager();
 		this.um = new UserManager();
@@ -146,10 +148,16 @@ class Chat{
 				room.reqHandler(user,mo);
 			break;
 			default:
-			var mo2 = new MsgObj("msg","system","not support : "+mo);
-			mo2.rid = room.rid;
-			user.send(mo2);
-			return false;
+			if(this.apps[mo.app]!=null){
+				var room = this.rm.room(mo.rid);
+				this.apps[mo.app].reqHandler(user,mo,room);
+			}else{
+				var mo2 = new MsgObj("msg","system","not support : "+mo);
+				mo2.rid = room.rid;
+				user.send(mo2);
+				return false;	
+			}
+			
 			break;
 		}
 		return true;

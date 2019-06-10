@@ -3,6 +3,7 @@ let controller = (function(){
 	let controller = {
 		"init":function(client,firstRid){
 			this.firstRid = firstRid;
+			this.apps = {}
 			this.v = new Vue({
 				el: '#chatApp',
 				data: {
@@ -137,6 +138,12 @@ let controller = (function(){
 				case "roomManager":this.roomManagerHandler(json);break;
 				case "user":this.userHandler(json);break;
 				default:
+				if(this.apps[json.app]!=null){
+					this.apps[json.app].jsonHandler(json);
+				}else{
+					
+				}
+				break;
 			}
 		},
 		"syncRoomManager":function(){

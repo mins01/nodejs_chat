@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="ko" >
+<head>
+	<title>nodejs_chat</title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Script-Type" content="text/javascript">
+	<meta http-equiv="Content-Style-Type" content="text/css">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="shortcut icon" href="http://www.mins01.com/favicon.ico">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	
+	<!-- <script src="/js/ForGoogle.js"></script> -->
+	<!-- google analytics -->
+	<!-- <script>ForGoogle.analytics()</script> -->
+	
+	
+	<!-- jquery 관련 -->
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+	
+	
+	<!-- 부트스트랩 4 : IE8지원안됨! -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" crossorigin="anonymous"></script>
+	<!-- vue.js -->
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	
+	
+	
+	<!-- meta og -->
+	
+	<meta property="og:title" content="nodejs_chat">
+	<meta property="og:description" content="nodejs_chat">
+	<meta name="og:image" content="http://www.mins01.com/img/logo.gif">
+	<meta property="og:image:width" content="190">
+	<meta property="og:image:height" content="70" />
+	<meta property="og:site_name" content="nodejs_chat" />
+	<meta property="og:type" content="website">
+	
+	<!-- //meta og -->
+	
+	<script src="vue_component.js"></script>
+	<script src="jquery.autolink.js"></script>
+	<script src="helper.js"></script>
+	
+	<script src="Client.js"></script>
+	<script src="MsgObj.js"></script>
+	<script src="controller.js"></script>
+	<link rel="stylesheet" href="client.css" crossorigin="anonymous">
+
+	<script src="tetrisOnline.js"></script>	
+
+	
+	
+	<link rel="stylesheet" href="https://mins01.github.io/game_tetris/tetrisBoxGame.css">
+	<!-- https://daneden.github.io/animate.css/ -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+
+	<script src="https://mins01.github.io/game_tetris/modules/js_TimerChain/TimerChain.js"></script>
+	<script src="https://mins01.github.io/game_tetris/modules/ui_AppearBox/AppearBox.js"></script>
+	
+	<script src="https://mins01.github.io/game_tetris/tetrisStags.js"></script>
+	<script src="https://mins01.github.io/game_tetris/Tetris.js"></script>
+	<script src="https://mins01.github.io/game_tetris/Tetrimino.js"></script>
+	<script src="https://mins01.github.io/game_tetris/tetriminoMaps.js"></script>
+	<script src="https://mins01.github.io/game_tetris/tetrisBoxGame.js"></script>
+	<script src="https://mins01.github.io/game_tetris/GamepadHandler.js"></script>
+
+	<script>
+	// var ttrg = tetrisBoxGame();
+	// var ttrgs = [ttrg];
+	// // var ttr = new Tetris();
+	// $(function(){
+	// 	ttrg.title="p1";
+	// 	ttrg.init(document.querySelector('.ttrbg-layout'));
+	// 	ttrg.create(10,20);
+	// 	$(document).on('keydown',function(event){
+	// 		ttrg.onkeyDown(event)
+	// 	})
+	// 	$(window).on('resize',function(event){
+	// 		ttrg.onresize();
+	// 	})
+	// })
+	</script>
+	
+	
+	<script>
+	var cl = Client.instance;
+	$(function(){
+		var rid = document.location.hash.replace(/^#/,'');		
+		controller.init(cl,rid);
+		controller.apps.tetris = tetrisOnline;
+		$('#input_msg').focus();
+		
+	})
+	</script>
+	<style>
+	.outbox{
+		position: fixed;left:5px;right:5px;bottom:5px;top:5px;
+		display: flex;
+		/* flex-wrap: wrap; */
+		/* flex: 1 1 0; */
+		flex-direction: column;
+	}
+	#msgbox{
+		flex: 1 0 100px;
+		overflow-y: scroll;
+	}
+	#input{
+		flex: 0 0 0;
+	}
+	</style>
+</head>
+<body>
+	<div class="container">
+		<h1 class="sr-only">nodejs_chat</h1>
+		
+		
+		
+		
+	</div>
+	<template id="template_msg" >
+		<li  class="list-group-item msg" data-app="msg.app" data-fun="msg.fun" data-val="msg.val">
+			<span class="nick d-inline-block"></span>
+			<span class="val d-inline-block"></span>
+		</li>
+	</template>
+	<div  id="chatApp"  :data-is-admin="(room.users[user.uid]!=null &amp;&amp; room.users[user.uid].isAdmin)?1:0">
+		<div class="chat-box" id="chat-box">
+			<header class="room">
+				<div class="openModalRoomManager">
+					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalRoomManager()">📁</button>
+				</div>
+				<div class="subject text-overflow-ellipsis">{{ room.subject }}</div>
+				<div class="openModalRoom show-is-admin">
+					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalRoom()">👑</button>
+				</div>
+				<div class="openModalSetting">
+					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalSetting()">⚙️</button>
+				</div>
+			</header>
+			<div class="content">
+				<article class="msgs">
+					<div class="scroll-y">
+						<ul class="list-group" id="msgsBox">
+						</ul>
+					</div>
+					
+				</article>
+				<aside class="users  d-none d-md-block d-lg-block">
+					<div class="scroll-y">
+						<ul class="list-group" id="usersBox">
+							<li class="list-group-item active text-center" ><b>USERS ({{ room.userCount }}/{{ room.maxUserCount }})</b></li>
+							<li class="list-group-item text-overflow-ellipsis" v-for="u in room.users" :title="u.nick" :data-uid="u.uid" :data-is-admin="u.isAdmin?1:0" :data-is-mine="u.uid==user.uid?1:0">{{ u.nick }}</li>
+						</ul>
+					</div>
+					
+				</aside>
+			</div>
+			<footer class="input">
+				<form action="#" name="formMsg" onsubmit="controller.formMsgOnSubmit(this); return false;" >
+					<input name="app" type="hidden" value="msg" />
+					<input name="fun" type="hidden" value="talk" />
+					<div class="inputMsg input-group">
+						<div class="input-group-prepend">
+							<button class="btn btn-warning" type="button" data-toggle="modal" data-target="#modalUpload">➕</button>
+						</div>
+						<div class="input-group-prepend d-none d-md-block d-lg-block">
+							<span class="input-group-text">{{ user.nick }}</span>
+						</div>
+						<input id="input_msg" autocomplete="off" name="val" type="text" maxlength="1000" placeholder="input massage" class="form-control"  />
+						<div class="input-group-append">
+							<button class="btn btn-success" type="submit">send</button>
+						</div>
+					
+					</div>
+				</form>
+			</footer>
+			
+		</div>
+		
+		
+		
+		<!-- modalSetting -->
+		<div class="modal fade" id="modalSetting" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Setting</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalSetting();return false;">
+							<label for="nick_val">Change nickname</label>
+							<input name="app" type="hidden" value="nick" />
+							<div class="inputMsg input-group">
+								<input id="nick_val" name="val" type="text" required placeholder="nick" class="form-control" maxlength="20" pattern="^[^\s\n\x00-\x2F\x3A-\x40\x5B-\x60\x7B~\x7F]{2,20}$" />
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">change</button>
+								</div>
+							</div>
+							<div>
+								<small class="form-text text-muted">Excluding special symbols</small>
+							</div>
+						</form>
+						
+						<form  class="form-group hide-is-admin" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalSetting();return false;">
+							<hr />
+							<label for="nick_val">Get permission for admin</label>
+							<input name="app" type="hidden" value="room" />
+							<input name="fun" type="hidden" value="grantAdmin" />
+							<div class="inputMsg input-group">
+								<input id="room_admin_val" name="val" type="password" required placeholder="password" class="form-control" maxlength="20"/>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">Grant</button>
+								</div>
+							</div>
+						</form>
+						
+						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- modalRoom -->
+		<div class="modal fade" id="modalRoom" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Room Setting</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form  class="form-group  d-inline-block m-3" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalRoom(this);return false;">
+							<label for="nick_val" class="sr-only">Revoke admin</label>
+							<input name="app" type="hidden" value="room" />
+							<input name="fun" type="hidden" value="revokeAdmin" />
+							<input name="val" type="hidden" required  value="" class="form-control" maxlength="20"/>
+							<div class="text-center">
+								<button class="btn btn-warning" type="submit">Revoke admin</button>
+							</div>
+						</form>
+						<form  class="form-group d-inline-block m-3" action="#" onsubmit="controller.sendFromForm(this);controller.hideModalRoom(this);return false;">
+							<label for="nick_val" class="sr-only">Close room</label>
+							<input name="app" type="hidden" value="roomManager" />
+							<input name="fun" type="hidden" value="remove" />
+							<input name="val" type="hidden" required v-model="room.rid" class="form-control"/>
+							<div class="text-center">
+								<button class="btn btn-warning" type="submit" :disabled="room.immutable">Close room</button>
+							</div>
+						</form>
+						<hr>
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;" >
+							<label for="nick_val">Change subject</label>
+							<input name="app" type="hidden" value="room" />
+							<input name="fun" type="hidden" value="setSubject" />
+							<div class="inputMsg input-group">
+								<input id="room_setSubject_val" name="val" type="text" required placeholder="subject" class="form-control" maxlength="100" :disabled="room.immutable"/>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit" :disabled="room.immutable">Change</button>
+								</div>
+							</div>
+						</form>
+						<hr>
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
+							<label for="nick_val">Change MaxUserCount</label>
+							<input name="app" type="hidden" value="room" />
+							<input name="fun" type="hidden" value="setMaxUserCount" />
+							<div class="inputMsg input-group">
+								<input id="room_setMaxUserCount_val" name="val" type="number" required placeholder="num.." class="form-control" min="2" max="100" :disabled="room.immutable"/>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit" :disabled="room.immutable">Change</button>
+								</div>
+							</div>
+						</form>
+						<hr>
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
+							<label for="nick_val">Kick user</label>
+							<input name="app" type="hidden" value="roomManager" />
+							<input name="fun" type="hidden" value="" />
+							<div class="inputMsg input-group">
+								<select id="roomManager_kick_val" class="form-control" name="val" :disabled="room.immutable">
+									<option v-for="u in room.users" :value="u.uid"  v-if="u.uid!=user.uid" :disabled="u.uid==user.uid" >{{ u.nick }}</option>
+								</select>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" value="kick" type="submit" onclick="this.form.fun.value=this.value" :disabled="room.immutable">Kick</button>
+									<button class="btn btn-danger"  value="ban" type="submit" onclick="this.form.fun.value=this.value" :disabled="room.immutable">Ban</button>
+								</div>
+							</div>
+						</form>
+						<hr>
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
+							<label for="nick_val">Baned uuid</label>
+							<input name="app" type="hidden" value="roomManager" />
+							<input name="fun" type="hidden" value="deleteBan" />
+							<div class="inputMsg input-group">
+								<select id="room_ban_val" class="form-control" name="val" :disabled="room.immutable">
+									<option v-for="(k,uuid) in room.banUuids" :value="uuid">[{{ k }}] {{ uuid.substr(0,10) }}...</option>
+								</select>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit" :disabled="room.immutable" >Delete</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- modalRoom -->
+		<div class="modal fade" id="modalRoomManager" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Room list</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;">
+							<label for="nick_val">Create Room</label>
+							<input name="app" type="hidden" value="roomManager" />
+							<input name="fun" type="hidden" value="create" />
+							<div class="inputMsg input-group">
+								<input name="val" id="roomManager_create_val" type="text" required placeholder="Subject" class="form-control" maxlength="100"/>
+								<input name="toRid" id="roomManager_create_toRid" type="text" placeholder="room id (optional)" class="form-control" maxlength="20" pattern="^[^\s\n\x00-\x2F\x3A-\x40\x5B-\x60\x7B~\x7F]{0,20}$" />
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">Create</button>
+								</div>
+							</div>
+						</form>
+						<hr>
+						<form  class="form-group" action="#" onsubmit="controller.join(this.val.value);return false;">
+							<label for="nick_val">Change Room</label>
+							<div class="inputMsg input-group">
+								<div class="input-group-prepend ">
+									<button class="btn btn-success" type="button" onclick="controller.syncRoomManager()">Reload</button>
+								</div>
+								<select id="roomManager_rid_val" class="form-control" name="val">
+									<option v-for="r in roomManager.rooms" :value="r.rid" :selected="r.rid==room.rid" >[{{ r.userCount }}/{{ r.maxUserCount }}] {{ r.subject }}</option>
+								</select>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">Change</button>
+								</div>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- modalUpload -->
+		<div class="modal fade" id="modalUpload" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">File Upload</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<!-- <form  class="form-group" action="#" onsubmit="controller.uploadFileFromForm(this);return false;" data-reset method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
+							<input name="dir" type="hidden" value="" />
+							
+							<label>Select a image</label>
+							<div class="inputMsg input-group">
+								<div class="input-group-prepend ">
+									<span class="input-group-text">Select</span>
+								</div>
+								<input id="input_uploadFile" accept=".jpg,.gif,.png" name="upf[]" type="file" required placeholder="Subject" class="form-control" maxlength="100"/>
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">Upload</button>
+								</div>
+							</div>
+						</form> -->
+						
+						<form  class="form-group" action="#" onsubmit="controller.sendFromForm(this);return false;" data-reset method="post" enctype="multipart/form-data" action="/WG2/ajax.upload.php">
+							<input name="dir" type="hidden" value="" />
+							<input name="app" type="hidden" value="msg" />
+							<input name="fun" type="hidden" value="image" />
+							<label>Insert image url</label>
+							<div class="inputMsg input-group">
+								<input name="val" type="url" required placeholder="http://" class="form-control" style="flex:2 1 auto" onchange="document.querySelector('#msg_image_preview').src=this.value"/>
+								<input name="alt" type="text" placeholder="alt(optional)" class="form-control" />
+								<div class="input-group-append ">
+									<button class="btn btn-warning" type="submit">Send</button>
+								</div>
+							</div>
+							<div class=" m-3 text-center">
+								<a href="about:blank" target="_blank" class="a4image" onclick="this.href = this.querySelector('img').src">
+									<img id="msg_image_preview" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" data-reset-src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==">
+								</a>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<template id="tetrisHtml">
+		<div class="ttrbg">
+			<div class="info-box">
+
+				<div class="textInfo textLevel"></div>
+				<div class="textInfo textScore"></div>
+				<div class="textInfo textRemovedBlocks"></div>
+				<div class="textInfo textUsedTetriminoes"></div>
+				
+				<div class="ttrbg-grid next">
+					<div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div>
+					<div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div>
+					<div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div>
+					<div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div><div class="box box-next"></div>
+				</div>
+			</div>
+			<div class="ttrbg-grid ready"></div>
+			<div class="ttrbg-grid end"></div>
+			<div class="appear-box">
+				<div class="appear-box-fence appear-box-item-center">
+					<div class="appear-box-content">
+						TETRIS
+					</div>
+				</div>	
+			</div>
+		</div>	
+	</template>
+</body>
+</html>
