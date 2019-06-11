@@ -9,12 +9,17 @@ var tetrisOnline = {
 		if(this.ttrgs[uid]){return this.ttrgs[uid];}
 		var gameBox = document.querySelector("#gameboxHtml").content.cloneNode(true).querySelector('.gameBox');
 		$(gameBox).attr("data-uid",uid);
-		var gameBoxes = document.querySelector(".gameBoxes");
 
 		if(controller.v.user.uid == uid){
-			gameBoxes.prepend(gameBox);
+			var gameBoxes = document.querySelector("#gameBoxes-I");
+			gameBoxes.append(gameBox);
 
 		}else{
+			if(document.querySelectorAll("#gameBoxes-L .gameBox").length <= document.querySelectorAll("#gameBoxes-R .gameBox").length){
+				var gameBoxes = document.querySelector("#gameBoxes-L");
+			}else{
+				var gameBoxes = document.querySelector("#gameBoxes-R");
+			}
 			gameBoxes.append(gameBox);
 		}
 
@@ -35,7 +40,7 @@ var tetrisOnline = {
 			this.ttrg = ttrg;
 			ttrg.ttr.cbOnDraw = function(map,w,h,mapNext,info){
 
-				info.player = controller.v.user.nick+"_"+controller.v.user.uid;
+				info.player = controller.v.user.nick;
 				info.nick = controller.v.user.nick;
 				info.uid = controller.v.user.uid;
 				controller.send(new MsgObj({app:"tetris","fun":"draw",val:[map,w,h,mapNext,info]}));
@@ -54,9 +59,11 @@ var tetrisOnline = {
 			}
 
 			ttrg.cbOnRemoveRows = function(ys,w,map){
-				console.log("cbOnRemoveRows ttrg2.beAttacked");
-
-				controller.send(new MsgObj({app:"tetris","fun":"attack",val:[ys.length]}));
+				
+				if(ys.length>1){ // 1초과만 어택!
+					console.log("cbOnRemoveRows Attack");
+					controller.send(new MsgObj({app:"tetris","fun":"attack",val:[ys.length]}));	
+				}
 			}
 		}else{
 			$(gameBox).attr("data-is-mine","0");
@@ -85,7 +92,7 @@ var tetrisOnline = {
 		var ttrg = this.createTetris(uid);
 		switch (json.fun) {
 			case "info1st":
-			$("#info1st").text(json.val.nick+" : "+json.val.score+"점")
+			$("#info1st").text(json.val.nick+"("+json.val.score+")")
 			break;
 			case "leave":
 			this.leave(json.val)

@@ -1,0 +1,58 @@
+@charset "UTF-8";
+
+
+
+#chat-box div.content_gameBoxes{
+	flex: 3 0 0;
+
+	min-height: 0;
+	margin-bottom:5px;
+}
+div.gameBox{
+  float: left;
+  width:150px;
+	margin:3px;
+
+}
+div.gameBox[data-is-mine="1"]{
+  width:200px;
+}
+div.gameBox[data-is-mine="0"]{
+  width:120px;
+  /* transform: scale(0.5); */
+}
+
+.content_gameBoxes{
+	display:flex;flex-direction:row	
+}
+.content_gameBoxes > div{
+	flex:1 0 0;
+}
+.content_gameBoxes > .gameBoxes-box-mine{
+	flex:0 0 210px
+}
+
+#gameBoxes-L{
+	
+}
+#gameBoxes-L div.gameBox{
+	float: right;
+}
+#gameBoxes-R{
+	
+}
+#gameBoxes-R div.gameBox{
+	float: left;
+}
+#gameBoxes-R::after,
+#gameBoxes-L::after{
+	content: "";
+	clear: both;
+}
+#gameBoxes-I{
+	
+}
+
+#info1st::before{
+	content: "TOP: "
+}

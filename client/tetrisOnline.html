@@ -52,6 +52,8 @@
 	<script src="tetrisOnline.js"></script>
 
 
+
+	<link rel="stylesheet" href="tetrisOnline.css">
 	<!--
 	http://wwwdev.mins01.com/game/tetris/
 	https://mins01.github.io/game_tetris
@@ -143,26 +145,25 @@
 					<button class="btn btn-info btn-sm" type="button" onclick="controller.openModalSetting()">⚙️</button>
 				</div>
 			</header>
-			<div class="mb-1" style="display:flex;flex-direction:row">
-				<div style="flex:1 0 0">
-					<button type="button" style="width:100%;" onclick="tetrisOnline.start();" class="gameBox btn btn-info">Start</button>
+			<div class="mb-1 content_gameBoxes" id="gameBoxes-box">
+				<div>
+					<div id="gameBoxes-L" class="gameBoxes scroll-y">
+					</div>
 				</div>
-				<div  style="flex:1 0 0">
-				<div id="info1st" style="text-align:center;">
-
+				<div class="gameBoxes-box-mine" style="flex:0 0 200px">
+					<button type="button" style="width:100%;" onclick="tetrisOnline.start();" class="gameBox btn btn-info mb-1">Start</button>
+					<div id="gameBoxes-I" class="gameBoxes scroll-y">
+					</div>
 				</div>
+				<div>
+					<div id="info1st" style="text-align:center;">
+						##(##)
+					</div>
+					<div id="gameBoxes-R" class="gameBoxes scroll-y">
+					</div>
 				</div>
-
 			</div>
-			<div class="content_gameBoxes">
 
-				<div style="clear:both"></div>
-				<div class="gameBoxes scroll-y">
-
-				</div>
-				<div style="clear:both"></div>
-
-			</div>
 			<div class="content">
 				<article class="msgs">
 					<div class="scroll-y">
