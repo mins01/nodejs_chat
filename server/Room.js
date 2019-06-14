@@ -90,7 +90,6 @@ class Room{
 		}
 		return false;
 	}
-
 	join(user){
 		console.log(this+".join("+user+")" );
 		if(this.banUuids.has(user.uuid)){
@@ -103,29 +102,28 @@ class Room{
 			return false;
 		}else{
 			this.add(user);
-			var mo = new MsgObj("msg","notice",user.nick+" entered the room("+this.subject+").");
-			this.broadcast(mo)
 			if(this.users.size==1){
 				this.grantAdmin(user)
 			}
 			this.sync();
+			var mos = [
+				new MsgObj("msg","notice",user.nick+" entered the room("+this.subject+")."),
+				new MsgObj("room","join",user.uid),
+			];
+			this.broadcast(mos)
 		}
 		return true;
 	}
 	leave(user){
 		console.log(this+".leave("+user+")" );
-
 		// 임시
-
-
-		var mo = new MsgObj("msg","notice",user.nick+" left the room("+this.subject+").");
 		this.remove(user);
-		this.broadcast(mo);
-		this.broadcast((new MsgObj({"app":"tetris","fun":"leave","val":user.uid})));
-		this.broadcast(new MsgObj("room","leave",user.uid));
 		this.sync();
-		user.send(mo);
-
+		this.broadcast([
+				new MsgObj("msg","notice",user.nick+" left the room("+this.subject+")."),
+				new MsgObj("room","leave",user.uid),
+		]);
+		
 	}
 	sync(){
 		var mo = new MsgObj();

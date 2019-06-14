@@ -18,6 +18,9 @@ class Chat{
 		var room = this.rm.create("LOBBY - http://mins01.com ","lobby");
 		room.setMaxUserCount(100);
 		room.immutable = true;
+		var room2 = this.rm.create("room2","room2");
+		room2.setMaxUserCount(100);
+		room2.immutable = true;
 	}
 
 	toString(){
@@ -69,6 +72,13 @@ class Chat{
 
 		user.sync();
 		this.rm.join(user,'lobby');
+		user.send([
+			new MsgObj({"app":"msg","fun":"notice","val":"#====================#"}),
+			new MsgObj({"app":"msg","fun":"notice","val":user.nick+ " Welcome!"}),
+			new MsgObj({"app":"msg","fun":"notice","val":"Homepage : http://mins01.com\nGithub : https://github.com/mins01/nodejs_chat"}),
+			new MsgObj({"app":"msg","fun":"notice","val":"#====================#"}),
+		] )
+		
 		if(mo.rid){
 			this.rm.leaveAndJoin(user,'lobby',mo.rid);
 		}

@@ -27,7 +27,16 @@ class User {
 		}
 	}
 
+	sends(mos){
+		for(var i=0,m=mos.length;i<m;i++){
+			this.send(mos[i]);
+		}
+	}
 	send(mo){
+		if(mo instanceof  Array){
+			return this.sends(mo)
+		}
+
 		mo.time = (new Date()).getTime();
 		try{
 			if(!this.isError){
