@@ -54,14 +54,14 @@
 
 
 	<link rel="stylesheet" href="tetrisOnline.css">
+	<!-- https://daneden.github.io/animate.css/ -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+	
 	<!--
 	http://wwwdev.mins01.com/game/tetris/
 	https://mins01.github.io/game_tetris
 	-->
-	<link rel="stylesheet" href="https://mins01.github.io/game_tetris/tetrisBoxGame.css">
-	<!-- https://daneden.github.io/animate.css/ -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
-
+	<!-- <link rel="stylesheet" href="https://mins01.github.io/game_tetris/tetrisBoxGame.css">
 	<script src="https://mins01.github.io/game_tetris/modules/js_TimerChain/TimerChain.js"></script>
 	<script src="https://mins01.github.io/game_tetris/modules/ui_AppearBox/AppearBox.js"></script>
 
@@ -70,7 +70,18 @@
 	<script src="https://mins01.github.io/game_tetris/Tetrimino.js"></script>
 	<script src="https://mins01.github.io/game_tetris/tetriminoMaps.js"></script>
 	<script src="https://mins01.github.io/game_tetris/tetrisBoxGame.js"></script>
-	<script src="https://mins01.github.io/game_tetris/GamepadHandler.js"></script>
+	<script src="https://mins01.github.io/game_tetris/GamepadHandler.js"></script> -->
+	
+	<link rel="stylesheet" href="http://wwwdev.mins01.com/game/tetris/tetrisBoxGame.css">
+	<script src="http://wwwdev.mins01.com/game/tetris/modules/js_TimerChain/TimerChain.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/modules/ui_AppearBox/AppearBox.js"></script>
+
+	<script src="http://wwwdev.mins01.com/game/tetris/tetrisStags.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/Tetris.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/Tetrimino.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/tetriminoMaps.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/tetrisBoxGame.js"></script>
+	<script src="http://wwwdev.mins01.com/game/tetris/GamepadHandler.js"></script>
 
 	<script>
 	// var ttrg = tetrisBoxGame();
@@ -152,25 +163,25 @@
 					</div>
 					<div id="gameBoxes-L" class="gameBoxes scroll-y">
 						<div class="gameBox  text-center">
-							<div>Rank 10</div>
+							<div>RANK NOW</div>
 							<ol id="olRank10">
-								<li>!!!</li>
-								<li>!!!</li>
-								<li>!!!</li>
-								<li>!!!</li>
-								<li>!!!</li>
-								<li>!!!</li>
-								<li>!!!</li>
-								<li>!!!</li>
-								<li>!!!</li>
-								<li>!!!</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
 								
 							</ol>
 						</div>
 					</div>
 				</div>
-				<div class="gameBoxes-box-mine" style="flex:0 0 200px">
-					<button type="button" style="width:100%;" onclick="tetrisOnline.start();" class="gameBox btn btn-info mb-1">Start</button>
+				<div class="gameBoxes-box-mine" style="flex:0 0 210px">
+					<button type="button" style="width:100%;" onclick="tetrisOnline.start();blur();" class="gameBox btn btn-info mb-1">Start</button>
 					<div id="gameBoxes-I" class="gameBoxes scroll-y">
 					</div>
 				</div>
@@ -179,7 +190,22 @@
 						##(##)
 					</div>
 					<div id="gameBoxes-R" class="gameBoxes scroll-y">
-
+						<div class="gameBox  text-center">
+							<div>HIGH 10</div>
+							<ol id="olHigh10">
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								<li>#NONE#</li>
+								
+							</ol>
+						</div>
 					</div>
 				</div>
 			</div>

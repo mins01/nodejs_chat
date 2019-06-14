@@ -50,12 +50,17 @@ var tetrisOnline = {
 				if(gap>0) this.sleep();
 				console.log("scoreUP : +"+gap+ " = "+newScore)
 			}
-			ttrg.ttr.cbOnGameOver = function(newScore,gap){
-				if(!this.gaming){
-					// tetrisGame.ab.stop().clear().contentHtml('<big>GAMEOVER</big>',-1).show(0)
-					return;
-				}
-				controller.send(new MsgObj({app:"tetris","fun":"gameOver",val:[newScore,gap]}));
+			ttrg.ttr.cbOnGameOver = function(info){
+				// alert('x')
+				// if(!this.gaming){
+				// 	// tetrisGame.ab.stop().clear().contentHtml('<big>GAMEOVER</big>',-1).show(0)
+				// 	return;
+				// }
+
+				info.player = controller.v.user.nick;
+				info.nick = controller.v.user.nick;
+				info.uid = controller.v.user.uid;
+				controller.send(new MsgObj({app:"tetris","fun":"gameOver",val:[info]}));
 			}
 
 			ttrg.cbOnRemoveRows = function(ys,w,map){
@@ -91,6 +96,15 @@ var tetrisOnline = {
 		this.ttrgs = {}
 		$(".gameBox[data-uid]").remove()
 		
+	},
+	"syncHighInfo":function(highInfos){
+		$("#olHigh10 li").each(function(k,v){
+			if(!highInfos[k]){
+				this.innerText = "#NONE#"
+			}else{
+				this.innerText = "["+highInfos[k].score +"] "+highInfos[k].player;
+			}
+		})
 	},
 	"syncRanks":function(){
 		var ranks = [];
@@ -138,6 +152,12 @@ var tetrisOnline = {
 				ttrg[json.fun].apply(ttrg,json.val);
 				this.ttrgs[uid].info = json.val[4];
 				this.syncRanks();
+			break;
+			case "gameOver":
+				//동작 안시킴
+			break;
+			case "syncHighInfo":
+				this.syncHighInfo(json.val[0]);
 			break;
 
 			default:

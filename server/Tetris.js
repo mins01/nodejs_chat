@@ -7,38 +7,21 @@ class Tetris{
 			"uid":"",
 			"nick":"#NONE#",
 		}
-		this.infos = {}
+		this.highInfos = []
 		console.log("Tetris()");
 	}
 
 	toString(){
 		return "Tetris";
 	}
-	
-	getRanks(info){
-		var nowTime = (new Date()).getTime();
-		var limitTime = nowTime - 10*1000;
-		if(info != null){
-			info.time = nowTime;
-			this.infos[info.uid] = info;
-		}
-		var ranks = []
-		for(let x in this.infos){
-			if(this.infos[x].time < limitTime){
-				this.infos[x] = null;
-				delete this.infos[x];
-			}else{
-					ranks.push(this.infos[x])
-			}	
-		}
-		
-
-		ranks.sort(function(a,b){
-			return a.score < b.score
+	gameOver(info){
+		var highInfos = this.highInfos.splice(0);
+		highInfos.push(info);
+		highInfos.sort(function(a,b){
+			return b.score - a.score
 		})
-		return ranks;
+		this.highInfos = highInfos.splice(0,10);
 	}
-	
 	reqHandler(user,mo,room){
 		var r;
 		switch (mo.fun) {
@@ -47,16 +30,20 @@ class Tetris{
 				this.info = mo.val[4];
 				room.broadcast((new MsgObj({"app":"tetris","fun":"info1st","val":this.info})));
 			}
-			room.broadcast([
-				mo,
-				// (new MsgObj({"app":"tetris","fun":"ranks","val":this.getRanks(mo.val[4])})),
-			]);
+			room.broadcast(mo);
 			break;
 			case "first":
 			room.broadcast([
 				(new MsgObj({"app":"tetris","fun":"info1st","val":this.info})),
-				// (new MsgObj({"app":"tetris","fun":"ranks","val":this.getRanks(null)})),
+				(new MsgObj({"app":"tetris","fun":"syncHighInfo","val":[this.highInfos]})),
 			]);
+			break;
+			case "gameOver":
+				this.gameOver(mo.val[0]);
+				room.broadcast([
+					(new MsgObj({"app":"tetris","fun":"gameOver","val":mo.val,"uid":mo.uid})),
+					(new MsgObj({"app":"tetris","fun":"syncHighInfo","val":[this.highInfos]})),
+				]);
 			break;
 			default:
 			room.broadcast(mo);

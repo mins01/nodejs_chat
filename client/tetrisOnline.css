@@ -59,5 +59,11 @@ div.gameBox[data-is-mine="0"]{
 
 
 #olRank10{
+  padding-left: 1em;
 	font-size:0.8em;
 }
+#olHigh10{
+	padding-left: 1em;
+	font-size:0.8em;
+}
+
