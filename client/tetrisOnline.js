@@ -92,6 +92,25 @@ var tetrisOnline = {
 		$(".gameBox[data-uid]").remove()
 		
 	},
+	"syncRanks":function(){
+		var ranks = [];
+		for(let x in this.ttrgs){
+			let ttrg = this.ttrgs[x];
+			ranks.push(ttrg.info);
+		}
+		
+		ranks.sort(function(a,b){
+			return b.score - a.score
+		})
+		// console.log(ranks)
+		$("#olRank10 li").each(function(k,v){
+			if(!ranks[k]){
+				this.innerText = "#NONE#"
+			}else{
+				this.innerText = "["+ranks[k].score +"] "+ranks[k].player;
+			}
+		})
+	},
 	"jsonHandler":function(json){
 		// console.log(json);
 		var uid = json.uid;
@@ -114,6 +133,11 @@ var tetrisOnline = {
 				this.ttrg.beAttacked.apply(ttrg,json.val);
 				console.log(json);
 			}
+			break;
+			case "draw":
+				ttrg[json.fun].apply(ttrg,json.val);
+				this.ttrgs[uid].info = json.val[4];
+				this.syncRanks();
 			break;
 
 			default:

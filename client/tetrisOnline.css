@@ -56,3 +56,8 @@ div.gameBox[data-is-mine="0"]{
 #info1st::before{
 	content: "TOP: "
 }
+
+
+#olRank10{
+	font-size:0.8em;
+}
