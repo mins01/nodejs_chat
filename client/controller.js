@@ -145,6 +145,14 @@ let controller = (function(){
 				}
 				break;
 			}
+			
+			if(json.app=="room"){
+				if(json.fun=="join" || json.fun=="leave"){
+					for(var x in this.apps){
+						this.apps[x].jsonHandler(json);
+					}
+				}
+			}
 		},
 		"syncRoomManager":function(){
 			this.send((new MsgObj({"app":"roomManager","fun":"sync","val":""})));

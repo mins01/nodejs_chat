@@ -86,6 +86,12 @@ var tetrisOnline = {
 		delete this.ttrgs[uid];
 		$(".gameBox[data-uid='"+uid+"']").remove()
 	},
+	"destroy":function(){
+		if(this.ttrg) this.ttrg.stop();
+		this.ttrgs = {}
+		$(".gameBox[data-uid]").remove()
+		
+	},
 	"jsonHandler":function(json){
 		// console.log(json);
 		var uid = json.uid;
@@ -93,6 +99,12 @@ var tetrisOnline = {
 		switch (json.fun) {
 			case "info1st":
 			$("#info1st").text(json.val.nick+"("+json.val.score+")")
+			break;
+			case "join":
+			if(controller.v.user.uid == json.val){
+				// console.log("초기화")
+				this.destroy();
+			}
 			break;
 			case "leave":
 			this.leave(json.val)

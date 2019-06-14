@@ -153,16 +153,16 @@ class Chat{
 			this.rm.reqHandler(user,mo);
 			break;
 			case "room": //room 메세지
-				var room = this.rm.room(mo.rid);
+				let room = this.rm.room(mo.rid);
 				if(!room){return;}
 				room.reqHandler(user,mo);
 			break;
 			default:
 			if(this.apps[mo.app]!=null){
-				var room = this.rm.room(mo.rid);
+				let room = this.rm.room(mo.rid);
 				this.apps[mo.app].reqHandler(user,mo,room);
 			}else{
-				var mo2 = new MsgObj("msg","system","not support : "+mo);
+				let mo2 = new MsgObj("msg","system","not support : "+mo);
 				mo2.rid = room.rid;
 				user.send(mo2);
 				return false;	
