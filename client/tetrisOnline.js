@@ -110,7 +110,10 @@ var tetrisOnline = {
 		var ranks = [];
 		for(let x in this.ttrgs){
 			let ttrg = this.ttrgs[x];
-			ranks.push(ttrg.info);
+			if(ttrg.info.gaming){
+				ranks.push(ttrg.info);	
+			}
+			
 		}
 		
 		ranks.sort(function(a,b){
