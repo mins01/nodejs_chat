@@ -181,7 +181,11 @@
 					</div>
 				</div>
 				<div class="gameBoxes-box-mine" style="flex:0 0 210px">
-					<button type="button" style="width:100%;" onclick="tetrisOnline.start();blur();" class="gameBox btn btn-info mb-1">Start</button>
+					<button type="button" style="width:100%;" onclick="tetrisOnline.start();blur();" class="gameBox btn btn-success btn-sm mb-1">Start</button>
+					<div class="btn-group" role="group" style="width:100%;">
+						<button type="button" style="width:100%;" onclick="tetrisOnline.btnOnlineReady();blur();" class="gameBox btn btn-info btn-sm mb-1">Online-Ready</button>
+						<button type="button" style="width:100%;" onclick="tetrisOnline.btnOnlineStart();blur();" class="gameBox btn btn-success btn-sm mb-1">Online-Start</button>
+					</div>
 					<div id="gameBoxes-I" class="gameBoxes scroll-y">
 					</div>
 				</div>

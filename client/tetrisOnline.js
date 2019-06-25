@@ -4,6 +4,8 @@ var tetrisOnline = {
 	"ttrg":null,
 	"ttrgs":{},
 	"uid":"",
+	"isOnline":false,
+	"isReady":false,
 	"createTetris":function(uid){
 		if(uid==null || !uid || uid.length<0){return null;}
 		if(this.ttrgs[uid]){return this.ttrgs[uid];}
@@ -22,7 +24,7 @@ var tetrisOnline = {
 			}
 			gameBoxes.append(gameBox);
 		}
-
+		var thisC = this;
 		var ttrg = tetrisBoxGame();
 		var tetrisGame = ttrg;
 		ttrg.title="p1";
@@ -43,6 +45,7 @@ var tetrisOnline = {
 				info.player = controller.v.user.nick;
 				info.nick = controller.v.user.nick;
 				info.uid = controller.v.user.uid;
+				info.isOnline = thisC.isOnline;
 				controller.send(new MsgObj({app:"tetris","fun":"draw",val:[map,w,h,mapNext,info]}));
 				// tetrisGame.draw(map,w,h,mapNext,info);
 			}
@@ -61,6 +64,11 @@ var tetrisOnline = {
 				info.nick = controller.v.user.nick;
 				info.uid = controller.v.user.uid;
 				controller.send(new MsgObj({app:"tetris","fun":"gameOver",val:[info]}));
+				if(thisC.isOnline){
+						controller.send(new MsgObj({app:"tetris","fun":"onlineGameOver",val:[info]}));
+				}else{
+					
+				}
 			}
 
 			ttrg.cbOnRemoveRows = function(ys,w,map){
@@ -83,6 +91,30 @@ var tetrisOnline = {
 		controller.send(new MsgObj({app:"tetris","fun":"first",val:[]}));
 		var ttrg = this.createTetris(controller.v.user.uid)
 		ttrg.start();
+		this.isOnline = false;
+		this.isReady = false;
+	},
+	"btnOnlineStart":function(){
+		this.isReady = true;
+		controller.send(new MsgObj({app:"tetris","fun":"onlineStart",val:[]}));
+	},
+	"onlineStart":function(){
+		if(this.isReady){
+			console.log("onlineStart");
+			this.start();
+			this.isOnline = true;	
+		}
+		
+	},
+	"btnOnlineReady":function(){
+		var ttrg = this.createTetris(controller.v.user.uid)
+		this.isReady = true;
+		ttrg.ttr.draw();
+		ttrg.ab.contentText("Online Ready");
+		
+	},
+	"onlineGameOver":function(ttrg,val){
+		
 	},
 	"leave":function(uid){
 		if(!this.ttrgs[uid]){return false;}
@@ -110,7 +142,10 @@ var tetrisOnline = {
 		var ranks = [];
 		for(let x in this.ttrgs){
 			let ttrg = this.ttrgs[x];
-			if(ttrg.info.gaming){
+			// if(ttrg.info.gaming){
+			// 	ranks.push(ttrg.info);	
+			// }
+			if(ttrg.info && ttrg.info.isOnline){
 				ranks.push(ttrg.info);	
 			}
 			
@@ -157,10 +192,17 @@ var tetrisOnline = {
 				this.syncRanks();
 			break;
 			case "gameOver":
-				//동작 안시킴
+				// this.gameOver(ttrg,json.val);
 			break;
+			
 			case "syncHighInfo":
 				this.syncHighInfo(json.val[0]);
+			break;
+			case "onlineStart":
+				this.onlineStart(json.val);
+			break;
+			case "onlineGameOver":
+				this.onlineGameOver(ttrg,json.val);
 			break;
 
 			default:
