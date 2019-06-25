@@ -76,7 +76,7 @@ var tetrisOnline = {
 				
 				if(ys.length>1){ // 1초과만 어택!
 					console.log("cbOnRemoveRows Attack");
-					controller.send(new MsgObj({app:"tetris","fun":"attack",val:[ys.length]}));	
+					controller.send(new MsgObj({app:"tetris","fun":"attack",val:[ys.length-1]}));	
 				}
 			}
 		}else{
@@ -97,14 +97,16 @@ var tetrisOnline = {
 		this.isReady = false;
 	},
 	"btnOnlineStart":function(){
-		this.isReady = true;
-		controller.send(new MsgObj({app:"tetris","fun":"onlineStart",val:[]}));
+		if(this.isReady){
+			controller.send(new MsgObj({app:"tetris","fun":"onlineStart",val:[]}));
+		}
 	},
 	"onlineStart":function(){
 		if(this.isReady){
 			console.log("onlineStart");
 			this.start();
 			this.isOnline = true;
+			this.isReady = false;
 			controller.send(new MsgObj({app:"tetris","fun":"setText",val:[""]}));
 
 		}
@@ -114,6 +116,7 @@ var tetrisOnline = {
 		var ttrg = this.createTetris(controller.v.user.uid)
 		ttrg.ttr.stop()
 		ttrg.ttr.clear()
+		ttrg.ttr.reset()
 		this.isOnline = true;	
 		this.isReady = true;
 		ttrg.ttr.draw();
@@ -134,9 +137,10 @@ var tetrisOnline = {
 	"onlineGameOver":function(ttrg,json){
 		if(this.isOnline){
 			if(this.countOnlineGaming()==1 && controller.v.user.uid != json.uid){
-				this.ttrg.stop();
+				
 				if(this.ttrg.info.gaming){
-					controller.send(new MsgObj({app:"tetris","fun":"setText",val:["WINNER!"]}));	
+					this.ttrg.gameOver();
+					controller.send(new MsgObj({app:"tetris","fun":"setText",val:["WINNER!"]}));
 				}
 			}
 		}
@@ -207,8 +211,10 @@ var tetrisOnline = {
 			break;
 			case "attack":
 			if(controller.v.user.uid != uid && this.ttrg){
-				this.ttrg.beAttacked.apply(ttrg,json.val);
-				console.log(json);
+				if(this.isOnline && ttrg.info.isOnline){
+					this.ttrg.beAttacked.apply(ttrg,json.val);
+					// console.log(json);	
+				}
 			}
 			break;
 			case "draw":
