@@ -90,7 +90,8 @@ var tetrisOnline = {
 	"start":function(){
 		controller.send(new MsgObj({app:"tetris","fun":"first",val:[]}));
 		var ttrg = this.createTetris(controller.v.user.uid)
-		ttrg.start();
+		// ttrg.start();
+		ttrg.startSimple();
 		this.isOnline = false;
 		this.isReady = false;
 	},
@@ -108,13 +109,29 @@ var tetrisOnline = {
 	},
 	"btnOnlineReady":function(){
 		var ttrg = this.createTetris(controller.v.user.uid)
+		ttrg.ttr.gameOver()
 		this.isReady = true;
 		ttrg.ttr.draw();
 		ttrg.ab.contentText("Online Ready");
 		
 	},
-	"onlineGameOver":function(ttrg,val){
-		
+	"countOnlineGaming":function(){
+		let cnt = 0;
+		for(let x in this.ttrgs){
+			let ttrg = this.ttrgs[x];
+			if(ttrg.info && ttrg.info.isOnline && ttrg.info.gaming){
+					cnt++;
+			}
+		}
+		return cnt;
+	},
+	"onlineGameOver":function(ttrg,json){
+		if(this.isOnline){
+			if(this.countOnlineGaming()==1 && controller.v.user.uid != json.uid){
+				this.ttrg.stop();
+				console.log("WIN");
+			}
+		}
 	},
 	"leave":function(uid){
 		if(!this.ttrgs[uid]){return false;}
@@ -202,7 +219,7 @@ var tetrisOnline = {
 				this.onlineStart(json.val);
 			break;
 			case "onlineGameOver":
-				this.onlineGameOver(ttrg,json.val);
+				this.onlineGameOver(ttrg,json);
 			break;
 
 			default:
