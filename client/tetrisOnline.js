@@ -64,6 +64,7 @@ var tetrisOnline = {
 				info.nick = controller.v.user.nick;
 				info.uid = controller.v.user.uid;
 				controller.send(new MsgObj({app:"tetris","fun":"gameOver",val:[info]}));
+				controller.send(new MsgObj({app:"tetris","fun":"setText",val:["GAMEOVER"]}));
 				if(thisC.isOnline){
 						controller.send(new MsgObj({app:"tetris","fun":"onlineGameOver",val:[info]}));
 				}else{
@@ -103,16 +104,21 @@ var tetrisOnline = {
 		if(this.isReady){
 			console.log("onlineStart");
 			this.start();
-			this.isOnline = true;	
+			this.isOnline = true;
+			controller.send(new MsgObj({app:"tetris","fun":"setText",val:[""]}));
+
 		}
 		
 	},
 	"btnOnlineReady":function(){
 		var ttrg = this.createTetris(controller.v.user.uid)
-		ttrg.ttr.gameOver()
+		ttrg.ttr.stop()
+		ttrg.ttr.clear()
+		this.isOnline = true;	
 		this.isReady = true;
 		ttrg.ttr.draw();
-		ttrg.ab.contentText("Online Ready");
+		// ttrg.ab.contentText("Online Ready");
+		controller.send(new MsgObj({app:"tetris","fun":"setText",val:["Ready!"]}));
 		
 	},
 	"countOnlineGaming":function(){
@@ -129,7 +135,9 @@ var tetrisOnline = {
 		if(this.isOnline){
 			if(this.countOnlineGaming()==1 && controller.v.user.uid != json.uid){
 				this.ttrg.stop();
-				console.log("WIN");
+				if(this.ttrg.info.gaming){
+					controller.send(new MsgObj({app:"tetris","fun":"setText",val:["WINNER!"]}));	
+				}
 			}
 		}
 	},
@@ -221,6 +229,10 @@ var tetrisOnline = {
 			case "onlineGameOver":
 				this.onlineGameOver(ttrg,json);
 			break;
+			case "setText":
+				ttrg.setText(json.val[0]);
+			break;
+			
 
 			default:
 			if(ttrg[json.fun]!=null){
